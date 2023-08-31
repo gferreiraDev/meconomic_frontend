@@ -16,9 +16,14 @@ import {
 import { Formik } from 'formik';
 import { useState } from 'react';
 import * as yup from 'yup';
+import { useSigninMutation } from '../services/authService';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../redux/authSlice';
 
 const Signin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [signin] = useSigninMutation();
   const [showPassword, setShowPassword] = useState(false);
 
   const initialValues = {
@@ -61,11 +66,31 @@ const Signin = () => {
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           console.log(values);
-          setTimeout(() => {
-            setSubmitting(false);
-            resetForm();
-            navigate('/profile', { replace: true });
-          }, 1500);
+
+          // setTimeout(() => {
+          //   setSubmitting(false);
+          //   resetForm();
+
+          //   navigate('/profile', { replace: true });
+          // });
+
+          signin(values)
+            .unwrap()
+            .then((response) => {
+              console.log(response);
+              setSubmitting(false);
+
+              alert(response.message);
+              dispatch(setCredentials(response.data));
+              resetForm();
+              navigate('/profile', { replace: true });
+            })
+            .catch((error) => {
+              console.log(error);
+              setSubmitting(false);
+              resetForm();
+              alert(error.data.message);
+            });
         }}
       >
         {({ values, errors, touched, handleChange, isSubmitting, handleSubmit, setFieldValue }) => (

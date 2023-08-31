@@ -12,7 +12,7 @@ const Router = () => {
         { path: 'signup', element: <Signup /> },
       ],
     },
-    { element: <PrivateLayout />, children: [{ path: 'profile', element: <Profile /> }] },
+    { path: '/', element: <PrivateLayout />, children: [{ path: 'profile', element: <Profile /> }] },
     { path: '*', element: <Navigate to="/signin" replace /> },
   ]);
 

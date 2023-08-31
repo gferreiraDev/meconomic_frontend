@@ -11,13 +11,19 @@ import {
   Link,
   InputAdornment,
   IconButton,
+  FormControl,
+  FormHelperText,
 } from '@mui/material';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import * as yup from 'yup';
+import { useSignupMutation } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [signup] = useSignupMutation();
+  const navigate = useNavigate();
 
   const initialValues = {
     firstName: '',
@@ -76,10 +82,23 @@ const Signup = () => {
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting, resetForm }) => {
           console.log(values);
-          setTimeout(() => {
-            setSubmitting(false);
-            resetForm();
-          }, 1500);
+
+          signup(values)
+            .unwrap()
+            .then((response) => {
+              console.log(response);
+              setSubmitting(false);
+
+              alert(response.message);
+
+              resetForm();
+              navigate('/signin', { replace: true });
+            })
+            .catch((error) => {
+              console.log(error);
+              setSubmitting(false);
+              alert(error.data.message);
+            });
         }}
       >
         {({ values, errors, touched, handleChange, isSubmitting, handleSubmit, setFieldValue }) => (
@@ -201,17 +220,20 @@ const Signup = () => {
               />
             </Grid>
 
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="acceptTerms"
-                  color="primary"
-                  checked={values.acceptTerms}
-                  onChange={() => setFieldValue('acceptTerms', !values.acceptTerms)}
-                />
-              }
-              label="Aceito os Termos de Uso"
-            />
+            <FormControl>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="acceptTerms"
+                    color="primary"
+                    checked={values.acceptTerms}
+                    onChange={() => setFieldValue('acceptTerms', !values.acceptTerms)}
+                  />
+                }
+                label="Aceito os Termos de Uso"
+              />
+              <FormHelperText sx={{ color: 'error.light' }}>{errors.acceptTerms}</FormHelperText>
+            </FormControl>
 
             <LoadingButton fullWidth variant="contained" color="primary" loading={isSubmitting} onClick={handleSubmit}>
               Cadastrar

@@ -1,8 +1,13 @@
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { Container } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { getUser } from '../redux/authSlice';
+import { Navbar } from '../components';
 
 const Private = () => {
-  return (
+  const user = useSelector(getUser);
+
+  return user ? (
     <Container
       maxWidth="xl"
       disableGutters
@@ -10,13 +15,15 @@ const Private = () => {
         width: '100vw',
         height: '100vh',
         bgcolor: '#001429',
-        py: 6,
+        display: 'flex',
       }}
     >
-      {/* <Navigate to='/signin' replace /> */}
+      <Navbar />
 
       <Outlet />
     </Container>
+  ) : (
+    <Navigate to="/signin" replace />
   );
 };
 
