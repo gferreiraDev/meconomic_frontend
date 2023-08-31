@@ -82,15 +82,17 @@ const Profile = () => {
           update(values)
             .unwrap()
             .then((response) => {
-              setSubmitting(false);
-              console.log(response.message);
+              // console.log(response.message);
               dispatch(updateCredentials(response.data));
               alert(response.message);
             })
             .catch((error) => {
               console.log(error);
-              setSubmitting(false);
               alert(error.data.message);
+            })
+            .finally(() => {
+              setSubmitting(false);
+              setIsEditing(false);
             });
         }}
       >

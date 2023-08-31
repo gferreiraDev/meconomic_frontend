@@ -36,6 +36,10 @@ export const authService = apiService.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
+      transformResponse: (response) => {
+        console.log('Response within authService', response);
+        return response;
+      },
     }),
     deleteUser: builder.mutation({
       query: () => ({

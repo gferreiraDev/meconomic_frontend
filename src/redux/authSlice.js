@@ -10,8 +10,8 @@ const authSlice = createSlice({
       state.token = access_token;
     },
     updateCredentials: (state, { payload }) => {
-      const { user } = payload;
-      state.user = user;
+      console.log('user from authslice', payload);
+      state.user = payload;
     },
     clearCredentials: (state) => {
       state.user = null;
