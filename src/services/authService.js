@@ -41,6 +41,17 @@ export const authService = apiService.injectEndpoints({
         return response;
       },
     }),
+    updatePassword: builder.mutation({
+      query: (data) => ({
+        url: '/users/update-password',
+        method: 'PATCH',
+        body: data,
+      }),
+      transformResponse: (response) => {
+        console.log('Response within authService', response);
+        return response;
+      },
+    }),
     deleteUser: builder.mutation({
       query: () => ({
         url: '/users',
@@ -63,5 +74,6 @@ export const {
   useSigninMutation,
   useSignoutMutation,
   useUpdateUserMutation,
+  useUpdatePasswordMutation,
   useDeleteUserMutation,
 } = authService;

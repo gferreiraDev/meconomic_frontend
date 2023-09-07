@@ -29,7 +29,7 @@ const Signin = () => {
   const initialValues = {
     email: '',
     password: '',
-    remember: false,
+    // remember: true,
   };
 
   const validations = yup.object({
@@ -127,7 +127,7 @@ const Signin = () => {
               }}
             />
 
-            <FormControlLabel
+            {/* <FormControlLabel
               control={
                 <Checkbox
                   name="remember"
@@ -137,7 +137,7 @@ const Signin = () => {
                 />
               }
               label="Lembrar usuário"
-            />
+            /> */}
 
             <LoadingButton fullWidth variant="contained" color="primary" loading={isSubmitting} onClick={handleSubmit}>
               Entrar

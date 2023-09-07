@@ -4,8 +4,9 @@ import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUser, updateCredentials, clearCredentials } from '../redux/authSlice';
-import { useUpdateUserMutation, useDeleteUserMutation, useSignoutMutation } from '../services/authService';
+import { getUser, updateCredentials, clearCredentials } from '../../redux/authSlice';
+import { useUpdateUserMutation, useDeleteUserMutation, useSignoutMutation } from '../../services/authService';
+import Form from './Form';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
@@ -14,6 +15,7 @@ const Profile = () => {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
   const [isEditing, setIsEditing] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [update] = useUpdateUserMutation();
   const [remove] = useDeleteUserMutation();
   const [signout] = useSignoutMutation();
@@ -188,7 +190,7 @@ const Profile = () => {
                   size="small"
                   variant="contained"
                   color="warning"
-                  onClick={() => alert('Open form to edit password')}
+                  onClick={() => setShowForm(true)}
                   sx={{ mx: 4 }}
                 >
                   Alterar Senha
@@ -206,6 +208,8 @@ const Profile = () => {
           </Grid>
         )}
       </Formik>
+
+      <Form visible={showForm} setVisible={setShowForm} />
     </Box>
   );
 };

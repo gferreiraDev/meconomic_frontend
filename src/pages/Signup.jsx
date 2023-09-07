@@ -33,7 +33,7 @@ const Signup = () => {
     document: '',
     password: '',
     confirmPassword: '',
-    acceptTerms: false,
+    acceptTerms: true,
   };
 
   const validations = yup.object({
@@ -220,7 +220,7 @@ const Signup = () => {
               />
             </Grid>
 
-            <FormControl>
+            <FormControl error={touched.acceptTerms && !!errors.acceptTerms}>
               <FormControlLabel
                 control={
                   <Checkbox

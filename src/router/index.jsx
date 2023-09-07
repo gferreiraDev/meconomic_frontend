@@ -20,8 +20,9 @@ const Router = () => {
       path: '/',
       element: <GlobalLayout />,
       children: [
-        { path: 'signin', element: <Signin /> },
+        { path: '/', element: <Signin /> },
         { path: 'signup', element: <Signup /> },
+        { path: 'signin', element: <Navigate to="/" replace /> },
       ],
     },
     {
