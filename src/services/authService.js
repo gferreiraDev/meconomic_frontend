@@ -66,6 +66,20 @@ export const authService = apiService.injectEndpoints({
         return response;
       },
     }),
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: '/auth/reset-password',
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -76,4 +90,6 @@ export const {
   useUpdateUserMutation,
   useUpdatePasswordMutation,
   useDeleteUserMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = authService;

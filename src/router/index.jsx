@@ -3,8 +3,10 @@ import { GlobalLayout, PrivateLayout } from '../layout';
 import {
   Cards,
   Dashboard,
+  ForgotPassword,
   Investments,
   Invoices,
+  ResetPassword,
   Signup,
   Signin,
   Statements,
@@ -20,9 +22,11 @@ const Router = () => {
       path: '/',
       element: <GlobalLayout />,
       children: [
-        { path: '/', element: <Signin /> },
+        { index: true, element: <Signin /> },
         { path: 'signup', element: <Signup /> },
         { path: 'signin', element: <Navigate to="/" replace /> },
+        { path: 'forgot-password', element: <ForgotPassword /> },
+        { path: 'reset-password/:resetToken', element: <ResetPassword /> },
       ],
     },
     {

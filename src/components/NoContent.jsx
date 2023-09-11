@@ -13,7 +13,7 @@ const NoContent = ({ text, action, actionLabel }) => {
         height: 150,
         margin: '25vh auto',
         bgcolor: '#ffffff08',
-        borderRadius: 5,
+        borderRadius: 2,
       }}
     >
       <Typography variant="body1" sx={{ fontStyle: 'italic' }}>

@@ -49,18 +49,8 @@ const Profile = () => {
   };
 
   const handleLogout = () => {
-    signout()
-      .unwrap()
-      .then((response) => {
-        console.log(response);
-        alert(response.message);
-        dispatch(clearCredentials());
-        navigate('/signin', { replace: true });
-      })
-      .catch((error) => {
-        console.log(error);
-        alert(error.data.message);
-      });
+    dispatch(clearCredentials());
+    navigate('/signin', { replace: true });
   };
 
   return (
