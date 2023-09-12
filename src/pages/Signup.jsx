@@ -101,7 +101,7 @@ const Signup = () => {
             });
         }}
       >
-        {({ values, errors, touched, handleChange, isSubmitting, handleSubmit, setFieldValue }) => (
+        {({ values, errors, touched, handleChange, handleBlur, isSubmitting, handleSubmit, setFieldValue }) => (
           <Grid container columns={4} rowGap={2} columnSpacing={1}>
             <Grid item xs={2}>
               <TextField
@@ -110,6 +110,7 @@ const Signup = () => {
                 name="firstName"
                 value={values.firstName}
                 onChange={handleChange('firstName')}
+                onBlur={handleBlur}
                 error={touched.firstName && !!errors.firstName}
                 helperText={errors.firstName}
                 fullWidth
@@ -122,6 +123,7 @@ const Signup = () => {
                 placeholder="Digite seu sobrenome"
                 name="lastName"
                 value={values.lastName}
+                onBlur={handleBlur}
                 onChange={handleChange('lastName')}
                 error={touched.lastName && !!errors.lastName}
                 helperText={errors.lastName}

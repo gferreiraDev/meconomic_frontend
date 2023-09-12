@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { Box, IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { DeleteOutlineOutlined, EditOutlined } from '@mui/icons-material';
-import { Loader, NoContent, PageHeader } from '../../components';
+import { Loader, NoContent, PageHeader, Alert } from '../../components';
 import Form from './Form';
-
-import { statements } from '../../_mocks';
+import { useListQuery, useDeleteMutation } from '../../services/statementService';
 
 /* ======= | DataGrid | ============================================================================== */
 
-const CustomGrid = ({ data }) => {
+const CustomGrid = ({ rows, edit, remove }) => {
   const columns = [
     { field: 'type', headerName: 'Tipo', flex: 0.2 },
     { field: 'category', headerName: 'Categoria', flex: 0.3 },
@@ -38,7 +37,6 @@ const CustomGrid = ({ data }) => {
       flex: 0.3,
       headerAlign: 'center',
       align: 'center',
-      renderCell: ({ row: { months } }) => months.reduce((count, month) => (count += month.checked ? 1 : 0), 0),
     },
     {
       field: 'actions',
@@ -47,11 +45,11 @@ const CustomGrid = ({ data }) => {
       align: 'center',
       renderCell: ({ row }) => (
         <>
-          <IconButton size="small" onClick={() => console.log('Editing item', row.id)}>
+          <IconButton size="small" onClick={() => edit(row)}>
             <EditOutlined fontSize="inherit" />
           </IconButton>
 
-          <IconButton size="small" onClick={() => console.log('Removing item', row.id)}>
+          <IconButton size="small" onClick={() => remove(row)}>
             <DeleteOutlineOutlined fontSize="inherit" />
           </IconButton>
         </>
@@ -90,30 +88,57 @@ const CustomGrid = ({ data }) => {
         },
       }}
     >
-      <DataGrid rowHeight={40} columns={columns} rows={data} hideFooter />
+      <DataGrid rowHeight={40} columns={columns} rows={rows?.data} hideFooter />
     </Box>
   );
 };
 
 CustomGrid.propTypes = {
-  data: PropTypes.array,
+  rows: PropTypes.object,
+  edit: PropTypes.func,
+  remove: PropTypes.func,
 };
 
 /* ======= | Page | ============================================================================== */
 const Statements = () => {
-  const [loading, setLoading] = useState(true);
-  const [data] = useState(statements);
   const [showContent, setShowContent] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogAttrs, setDialogAttrs] = useState(null);
+  const [drop] = useDeleteMutation();
+  const { data, isLoading, isError, isSuccess, refetch } = useListQuery();
+
+  const handleSelect = (value) => {
+    setSelected(value);
+    setShowForm(true);
+  };
+
+  const handleRemove = (value) => {
+    drop({ id: value.id })
+      .unwrap()
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.log(error))
+      .finally(() => {
+        refetch();
+      });
+  };
+
+  const handleCloseForm = (response, isError) => {
+    setDialogAttrs({ message: response, error: isError });
+    setShowForm(false);
+    setShowDialog(true);
+  };
 
   useEffect(() => {
-    setLoading(true);
-    console.log('Show content?', showContent);
+    if (!showForm) refetch();
+  }, [showForm, refetch]);
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, [showContent]);
+  const displayMessage = () => {
+    setShowDialog(true);
+  };
 
   return (
     <Box
@@ -124,16 +149,16 @@ const Statements = () => {
       }}
     >
       <PageHeader
-        title="Custo Fixo"
-        subtitle="Receitas & Despesas"
+        title="Meus Registros"
+        subtitle="Índice de receitas & despesas"
         label="Incluir"
-        action={() => setShowForm((prev) => !prev)}
+        action={() => handleSelect(null)}
       />
 
-      {loading ? (
+      {isLoading ? (
         <Loader />
-      ) : showContent ? (
-        <CustomGrid data={data} />
+      ) : isSuccess && data ? (
+        <CustomGrid rows={data} edit={handleSelect} remove={handleRemove} />
       ) : (
         <NoContent
           text="Nenhum conteúdo a ser exibido"
@@ -142,7 +167,14 @@ const Statements = () => {
         />
       )}
 
-      <Form open={showForm} action={() => setShowForm(false)} />
+      <Form open={showForm} action={handleCloseForm} data={selected} close={() => setShowForm(false)} />
+
+      <Alert
+        open={showDialog}
+        handleClose={() => setShowDialog(false)}
+        message={dialogAttrs?.message}
+        error={dialogAttrs?.error}
+      />
     </Box>
   );
 };

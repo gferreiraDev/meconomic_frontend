@@ -22,31 +22,37 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { types, categories } from '../../_mocks';
 import { getDate } from 'date-fns';
+import { useCreateMutation, useUpdateMutation } from '../../services/statementService';
+import { formatCurrency } from '../../utils';
 
-const Form = ({ data, open, action }) => {
+const Form = ({ data, open, action, close }) => {
   const [selectAll, setSelectAll] = useState(false);
+  const [create] = useCreateMutation();
+  const [update] = useUpdateMutation();
 
-  const initialValues = {
-    type: '',
-    category: '',
-    description: '',
-    expectedValue: '',
-    dueDay: 1,
-    months: [
-      { month: '1', label: 'Jan', checked: false },
-      { month: '2', label: 'Fev', checked: false },
-      { month: '3', label: 'Mar', checked: false },
-      { month: '4', label: 'Abr', checked: false },
-      { month: '5', label: 'Mai', checked: false },
-      { month: '6', label: 'Jun', checked: false },
-      { month: '7', label: 'Jul', checked: false },
-      { month: '8', label: 'Ago', checked: false },
-      { month: '9', label: 'Set', checked: false },
-      { month: '10', label: 'Out', checked: false },
-      { month: '11', label: 'Nov', checked: false },
-      { month: '12', label: 'Dez', checked: false },
-    ],
-  };
+  const initialValues = data
+    ? { ...data }
+    : {
+        type: '',
+        category: '',
+        description: '',
+        expectedValue: '',
+        dueDay: null,
+        months: [
+          { month: '1', label: 'Jan', checked: false },
+          { month: '2', label: 'Fev', checked: false },
+          { month: '3', label: 'Mar', checked: false },
+          { month: '4', label: 'Abr', checked: false },
+          { month: '5', label: 'Mai', checked: false },
+          { month: '6', label: 'Jun', checked: false },
+          { month: '7', label: 'Jul', checked: false },
+          { month: '8', label: 'Ago', checked: false },
+          { month: '9', label: 'Set', checked: false },
+          { month: '10', label: 'Out', checked: false },
+          { month: '11', label: 'Nov', checked: false },
+          { month: '12', label: 'Dez', checked: false },
+        ],
+      };
 
   const validations = yup.object({
     type: yup
@@ -95,38 +101,57 @@ const Form = ({ data, open, action }) => {
         initialValues={initialValues}
         validationSchema={validations}
         onSubmit={(values, { resetForm, setSubmitting }) => {
-          console.log('Form values beforeFormat:', values);
-
-          const formatedValue = values.expectedValue.replace(',', '.');
           const dados = {
             ...values,
-            expectedValue: formatedValue,
+            expectedValue: formatCurrency(values.expectedValue),
             installments: values.months.reduce((sum, month) => (sum += month.checked ? 1 : 0), 0),
           };
 
-          console.log('Form values afterFormat:', dados);
+          if (values.id) {
+            update({ id: values.id, data: dados })
+              .unwrap()
+              .then(({ message, data }) => {
+                setSubmitting(false);
+                resetForm();
 
-          setTimeout(() => {
-            setSubmitting(false);
-            action();
-          }, 1000);
+                action(message, false);
+              })
+              .catch((error) => {
+                console.log(error);
+                action(error.data.message, true);
+              });
+          } else {
+            create(dados)
+              .unwrap()
+              .then(({ message, data }) => {
+                setSubmitting(false);
+                resetForm();
+                action(message, false);
+              })
+              .catch((error) => {
+                console.log(error);
+                action(error.data.message, true);
+              });
+          }
         }}
         enableReinitialize
       >
-        {({ errors, isSubmitting, values, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
+        {({ errors, isSubmitting, values, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
           <Box
             sx={{
-              width: 420,
+              width: 430,
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
               alignItems: 'center',
+              py: 2,
+              overflowX: 'hidden',
             }}
           >
             <Typography variant="h5">Novo Registro</Typography>
 
-            <Grid container columns={4} spacing={2} sx={{ border: 'solid 1px #cacaca', p: 2 }}>
+            <Grid container columns={4} spacing={2} sx={{ p: 2 }}>
               <Grid item xs={2}>
                 <FormControl fullWidth error={!!errors.type}>
                   <InputLabel>Tipo</InputLabel>
@@ -178,7 +203,7 @@ const Form = ({ data, open, action }) => {
                   onChange={handleChange}
                   value={values.expectedValue}
                   name="expectedValue"
-                  error={!!errors.expectedValue}
+                  error={touched.expectedValue && !!errors.expectedValue}
                   helperText={errors.expectedValue}
                   InputProps={{
                     startAdornment: <InputAdornment position="start">R$</InputAdornment>,
@@ -187,15 +212,15 @@ const Form = ({ data, open, action }) => {
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.dueDay}>
+                <FormControl fullWidth error={touched.dueDay && !!errors.dueDay}>
                   <DatePicker
                     label="Dia de Vencimento"
                     views={['day']}
-                    value={getDate(values.dueDay)}
+                    // value={values.dueDay}
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('dueDay', getDate(date))}
                     name="dueDay"
-                    error={!!errors.dueDay}
+                    error={touched.dueDay && !!errors.dueDay}
                   />
                   <FormHelperText>{errors.dueDay}</FormHelperText>
                 </FormControl>
@@ -231,7 +256,6 @@ const Form = ({ data, open, action }) => {
 
             <Box
               sx={{
-                border: 'solid 1px #000',
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'row',
@@ -257,6 +281,7 @@ Form.propTypes = {
   data: PropTypes.object,
   open: PropTypes.bool,
   action: PropTypes.func,
+  close: PropTypes.func,
 };
 
 export default Form;
