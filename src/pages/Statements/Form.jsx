@@ -216,7 +216,7 @@ const Form = ({ data, open, action, close }) => {
                   <DatePicker
                     label="Dia de Vencimento"
                     views={['day']}
-                    // value={values.dueDay}
+                    value={values.dueDay}
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('dueDay', getDate(date))}
                     name="dueDay"
@@ -263,7 +263,7 @@ const Form = ({ data, open, action, close }) => {
                 justifyContent: 'space-around',
               }}
             >
-              <LoadingButton variant="outlined" color="inherit" onClick={action}>
+              <LoadingButton variant="outlined" color="inherit" onClick={close}>
                 Cancelar
               </LoadingButton>
               <LoadingButton loading={isSubmitting} variant="contained" color="primary" onClick={handleSubmit}>

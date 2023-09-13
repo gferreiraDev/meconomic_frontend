@@ -15,15 +15,19 @@ import {
   FormHelperText,
 } from '@mui/material';
 import { Formik } from 'formik';
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import * as yup from 'yup';
 import { useSignupMutation } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
+import { useMask } from '@react-input/mask';
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [signup] = useSignupMutation();
   const navigate = useNavigate();
+
+  const phoneMaskRef = useMask({ mask: '(__) _____-____', replacement: '_' });
+  const documentMaskRef = useMask({ mask: '___.___.___-__', replacement: '_' });
 
   const initialValues = {
     firstName: '',
@@ -146,6 +150,7 @@ const Signup = () => {
 
             <Grid item xs={2}>
               <TextField
+                inputRef={phoneMaskRef}
                 label="Telefone"
                 placeholder="Digite seu telefone"
                 name="phone"
@@ -159,6 +164,7 @@ const Signup = () => {
 
             <Grid item xs={2}>
               <TextField
+                inputRef={documentMaskRef}
                 label="CPF"
                 placeholder="Digite seu CPF"
                 name="document"
