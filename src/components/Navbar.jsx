@@ -71,7 +71,7 @@ const Navbar = ({ ...props }) => {
     { title: 'Registros', target: '/statements', icon: <AutoStoriesOutlined /> },
     { title: 'Lançamentos', target: '/transactions', icon: <CurrencyExchangeOutlined /> },
     { title: 'Cartões', target: '/cards', icon: <CreditCardOutlined /> },
-    { title: 'Faturas', target: '/invoices', icon: <SellOutlined /> },
+    { title: 'Faturas', target: '/invoices/all', icon: <SellOutlined /> },
     { title: 'Carteira', target: '/wallet', icon: <AccountBalanceWalletOutlined /> },
     { title: 'Investimentos', target: '/investments', icon: <SavingsOutlined /> },
     { title: 'Metas', target: '/targets', icon: <BeenhereOutlined /> },

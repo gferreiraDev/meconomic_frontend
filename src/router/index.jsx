@@ -36,7 +36,7 @@ const Router = () => {
         { path: 'profile', element: <Profile /> },
         { path: 'statements', element: <Statements /> },
         { path: 'cards', element: <Cards /> },
-        { path: 'invoices', element: <Invoices /> },
+        { path: 'invoices/:id', element: <Invoices /> },
         { path: 'investments', element: <Investments /> },
         { path: 'wallet', element: <Wallet /> },
         { path: 'transactions', element: <Transactions /> },
@@ -44,7 +44,7 @@ const Router = () => {
         { path: 'dashboard', element: <Dashboard /> },
       ],
     },
-    { path: '*', element: <Navigate to="/signin" replace /> },
+    // { path: '*', element: <Navigate to="/signin" replace /> },
   ]);
 
   return routes;

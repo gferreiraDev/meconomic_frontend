@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Box, Button, Typography } from '@mui/material';
 
-const PageHeader = ({ title, subtitle, label, action }) => {
+const PageHeader = ({ title, subtitle, label, action, children }) => {
   return (
     <Box
       sx={{
@@ -28,6 +28,8 @@ const PageHeader = ({ title, subtitle, label, action }) => {
         </Typography>
       </Box>
 
+      {children}
+
       {action && (
         <Button variant="outlined" color="secondary" onClick={action}>
           {label}
@@ -42,6 +44,7 @@ PageHeader.propTypes = {
   subtitle: PropTypes.string,
   label: PropTypes.string,
   action: PropTypes.func,
+  children: PropTypes.node,
 };
 
 export default PageHeader;
