@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { Loader, NoContent, PageHeader, Alert } from '../../components';
+import { DeleteOutlineOutlined, EditOutlined } from '@mui/icons-material';
+import { useListQuery, useDeleteMutation } from '../../services/statementService';
 import { Box, IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { DeleteOutlineOutlined, EditOutlined } from '@mui/icons-material';
-import { Loader, NoContent, PageHeader, Alert } from '../../components';
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Form from './Form';
-import { useListQuery, useDeleteMutation } from '../../services/statementService';
 
 /* ======= | DataGrid | ============================================================================== */
-
 const CustomGrid = ({ rows, edit, remove }) => {
   const columns = [
     { field: 'type', headerName: 'Tipo', flex: 0.2 },
@@ -101,12 +100,11 @@ CustomGrid.propTypes = {
 
 /* ======= | Page | ============================================================================== */
 const Statements = () => {
+  const [drop] = useDeleteMutation();
   const [showContent, setShowContent] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [showDialog, setShowDialog] = useState(false);
-  const [dialogAttrs, setDialogAttrs] = useState(null);
-  const [drop] = useDeleteMutation();
+  const [message, setMessage] = useState({ message: '', error: false, visible: false });
   const { data, isLoading, isError, isSuccess, refetch } = useListQuery();
 
   const handleSelect = (value) => {
@@ -127,18 +125,13 @@ const Statements = () => {
   };
 
   const handleCloseForm = (response, isError) => {
-    setDialogAttrs({ message: response, error: isError });
+    setMessage({ message: response, error: isError, visible: true });
     setShowForm(false);
-    setShowDialog(true);
   };
 
   useEffect(() => {
     if (!showForm) refetch();
   }, [showForm, refetch]);
-
-  const displayMessage = () => {
-    setShowDialog(true);
-  };
 
   return (
     <Box
@@ -157,7 +150,7 @@ const Statements = () => {
 
       {isLoading ? (
         <Loader />
-      ) : isSuccess && data ? (
+      ) : isSuccess && data && data?.data?.length ? (
         <CustomGrid rows={data} edit={handleSelect} remove={handleRemove} />
       ) : (
         <NoContent
@@ -169,12 +162,7 @@ const Statements = () => {
 
       <Form open={showForm} action={handleCloseForm} data={selected} close={() => setShowForm(false)} />
 
-      <Alert
-        open={showDialog}
-        handleClose={() => setShowDialog(false)}
-        message={dialogAttrs?.message}
-        error={dialogAttrs?.error}
-      />
+      <Alert open={message.visible} message={message.message} error={message.error} />
     </Box>
   );
 };

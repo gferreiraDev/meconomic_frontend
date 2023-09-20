@@ -33,7 +33,7 @@ const Router = () => {
       path: '/',
       element: <PrivateLayout />,
       children: [
-        { path: 'profile', element: <Profile /> },
+        { path: 'dashboard', element: <Dashboard /> },
         { path: 'statements', element: <Statements /> },
         { path: 'cards', element: <Cards /> },
         { path: 'invoices/:id', element: <Invoices /> },
@@ -41,7 +41,7 @@ const Router = () => {
         { path: 'wallet', element: <Wallet /> },
         { path: 'transactions', element: <Transactions /> },
         { path: 'targets', element: <Targets /> },
-        { path: 'dashboard', element: <Dashboard /> },
+        { path: 'profile', element: <Profile /> },
       ],
     },
     // { path: '*', element: <Navigate to="/signin" replace /> },

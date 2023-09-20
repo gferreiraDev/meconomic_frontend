@@ -1,4 +1,13 @@
+import { useCreateCardMutation, useUpdateCardMutation } from '../../services/cardService';
+import { brands, chargeRules, cardStatus } from '../../_mocks';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { getDate, format } from 'date-fns';
+import { formatCurrency } from '../../utils';
+import { stringToDate } from '../../utils';
+import { LoadingButton } from '@mui/lab';
 import PropTypes from 'prop-types';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import {
   Box,
   Grid,
@@ -12,14 +21,6 @@ import {
   TextField,
   InputLabel,
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import { brands, chargeRules, cardStatus } from '../../_mocks';
-import { getDate, format, toDate, parse } from 'date-fns';
-import { useCreateCardMutation, useUpdateCardMutation } from '../../services/cardService';
-import { stringToDate } from '../../utils';
 
 const Form = ({ data, open, action, close }) => {
   const [create] = useCreateCardMutation();
@@ -45,11 +46,11 @@ const Form = ({ data, open, action, close }) => {
     name: yup.string().required('Campo obrigatório'),
     brand: yup.string().required('Campo obrigatório'),
     lastNumbers: yup.string().required('Campo obrigatório'),
-    limit: yup.number().min(0, 'Valor inválido').required('Campo obrigatório'),
+    limit: yup.string().min(0, 'Valor inválido').required('Campo obrigatório'),
     closingDay: yup.number().min(1, 'Valor inválido').max(31, 'Valor inválido').required('Campo obrigatório'),
     dueDay: yup.number().min(1, 'Valor inválido').max(31, 'Valor inválido').required('Campo obrigatório'),
-    annuity: yup.number().required('Campo obrigatório'),
-    fees: yup.number().required('Campo obrigatório'),
+    annuity: yup.string().required('Campo obrigatório'),
+    fees: yup.string().required('Campo obrigatório'),
     chargeRule: yup.string().required('Campo obrigatório'),
     expiryDate: yup.string().required('Campo obrigatório'),
     status: yup.string().required('Campo obrigatório'),
@@ -61,31 +62,34 @@ const Form = ({ data, open, action, close }) => {
         initialValues={initialValues}
         validationSchema={validations}
         onSubmit={(values, { resetForm, setSubmitting }) => {
-          console.log('registring card', values);
+          const data = {
+            ...values,
+            limit: formatCurrency(values.limit),
+            annuity: formatCurrency(values.annuity),
+            fees: formatCurrency(values.fees),
+          };
 
           if (values.id) {
-            update({ id: values.id, data: values })
+            update({ id: values.id, data })
               .unwrap()
-              .then(({ message, data }) => {
+              .then(({ message }) => {
                 setSubmitting(false);
                 resetForm();
 
                 action(message, false);
               })
               .catch((error) => {
-                console.log(error);
                 action(error.data.message, true);
               });
           } else {
-            create(values)
+            create(data)
               .unwrap()
-              .then(({ message, data }) => {
+              .then(({ message }) => {
                 setSubmitting(false);
                 resetForm();
                 action(message, false);
               })
               .catch((error) => {
-                console.log(error);
                 action(error.data.message, true);
               });
           }
@@ -160,7 +164,7 @@ const Form = ({ data, open, action, close }) => {
                   onChange={handleChange}
                   value={values.limit}
                   name="limit"
-                  error={!!errors.limit}
+                  error={touched.limit && !!errors.limit}
                   helperText={errors.limit}
                   InputProps={{
                     startAdornment: <InputAdornment position="start">R$</InputAdornment>,

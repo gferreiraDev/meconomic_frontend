@@ -1,4 +1,11 @@
+import { useAddTransactionMutation, useUpdateTransactionMutation } from '../../services/transactionService';
+import { types, categories, transactionStatus } from '../../_mocks';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { formatCurrency } from '../../utils';
+import { LoadingButton } from '@mui/lab';
 import PropTypes from 'prop-types';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import {
   Box,
   Grid,
@@ -12,13 +19,6 @@ import {
   TextField,
   InputLabel,
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import { types, categories, transactionStatus } from '../../_mocks';
-import { useAddTransactionMutation, useUpdateTransactionMutation } from '../../services/transactionService';
-import { formatCurrency } from '../../utils';
 
 const Form = ({ data, open, action, close }) => {
   const [create] = useAddTransactionMutation();
@@ -187,7 +187,7 @@ const Form = ({ data, open, action, close }) => {
                     label="Vencimento"
                     views={['year', 'month', 'day']}
                     format="dd/MM/yyyy"
-                    value={new Date(values.dueDate)}
+                    value={values.dueDate ? new Date(values.dueDate) : null}
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('dueDate', date)}
                     name="dueDate"
@@ -203,7 +203,7 @@ const Form = ({ data, open, action, close }) => {
                     label="Pagamento"
                     views={['year', 'month', 'day']}
                     format="dd/MM/yyyy"
-                    value={new Date(values.payDate)}
+                    value={values.payDate ? new Date(values.payDate) : null}
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('payDate', date)}
                     name="payDate"

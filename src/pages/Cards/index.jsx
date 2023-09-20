@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
-import { Loader, NoContent, PageHeader } from '../../components';
-import { Box, Grid, Typography, IconButton, Card, Chip, CardContent, CardActions, CardActionArea } from '@mui/material';
-import { DeleteOutlineOutlined, EditOutlined } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import Form from './Form';
 import { useDeleteCardMutation, useListCardsQuery } from '../../services/cardService';
+import { DeleteOutlineOutlined, EditOutlined } from '@mui/icons-material';
+import { Alert, Loader, NoContent, PageHeader } from '../../components';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import Form from './Form';
+import { Box, Grid, Typography, IconButton, Card, Chip, CardContent, CardActions, CardActionArea } from '@mui/material';
 
 /* ======= | List | ============================================================================== */
 const CardsList = ({ rows, edit, remove }) => {
@@ -16,9 +16,8 @@ const CardsList = ({ rows, edit, remove }) => {
       sx={{
         width: '100%',
         height: '80vh',
-        border: 'solid 2px #fff',
         mt: 2,
-        overflowY: 'scroll',
+        overflowY: 'auto',
       }}
     >
       {rows.map((card) => (
@@ -27,7 +26,7 @@ const CardsList = ({ rows, edit, remove }) => {
             <CardContent sx={{ p: { xs: 1, md: 1.5 } }}>
               <Grid container columns={12} spacing={1}>
                 <Grid item xs={2} sx={{ display: { xs: 'none', lg: 'block' } }}>
-                  <Box sx={{ height: 70, p: 1, borderRadius: 2, bgcolor: '#00000033' }}>
+                  <Box sx={{ height: 80, p: 1, borderRadius: 2, bgcolor: '#00000033' }}>
                     <Typography variant="body2">****.****.****.{card?.lastNumbers}</Typography>
                     <Typography variant="body2">{card?.expiryDate}</Typography>
                   </Box>
@@ -131,11 +130,10 @@ CardsList.propTypes = {
 
 /* ======= | Page | ============================================================================== */
 const Cards = () => {
+  const [drop] = useDeleteCardMutation();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [showDialog, setShowDialog] = useState(false);
-  const [dialogAttrs, setDialogAttrs] = useState(null);
-  const [drop] = useDeleteCardMutation();
+  const [message, setMessage] = useState({ message: '', error: false, visible: false });
   const { data, isLoading, isError, isSuccess, refetch } = useListCardsQuery();
 
   const handleSelect = (value) => {
@@ -147,18 +145,14 @@ const Cards = () => {
     drop({ id: value.id })
       .unwrap()
       .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => console.log(error))
-      .finally(() => {
         refetch();
-      });
+      })
+      .catch((error) => setMessage({ message: error.data.message, error: true, visible: true }));
   };
 
   const handleCloseForm = (response, isError) => {
-    setDialogAttrs({ message: response, error: isError });
+    setMessage({ message: response, error: isError, visible: true });
     setShowForm(false);
-    setShowDialog(true);
   };
 
   useEffect(() => {
@@ -168,7 +162,6 @@ const Cards = () => {
   return (
     <Box
       sx={{
-        border: 'solid 2px #fff',
         flex: 1,
         p: 2,
       }}
@@ -182,13 +175,19 @@ const Cards = () => {
 
       {isLoading ? (
         <Loader />
-      ) : isSuccess && data ? (
+      ) : isSuccess && data && data?.data?.length ? (
         <CardsList rows={data.data} edit={handleSelect} remove={handleRemove} />
       ) : (
         <NoContent text="Nenhum conteúdo a ser exibido" action={() => refetch()} actionLabel="Recarregar" />
       )}
 
       <Form open={showForm} action={handleCloseForm} data={selected} close={() => setShowForm(false)} />
+      <Alert
+        open={message.visible}
+        handleClose={() => setMessage((prev) => ({ ...prev, visible: !prev.visible }))}
+        message={message.message}
+        error={message.error}
+      />
     </Box>
   );
 };

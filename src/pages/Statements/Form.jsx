@@ -1,5 +1,13 @@
-import { useState } from 'react';
+import { useCreateMutation, useUpdateMutation } from '../../services/statementService';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { types, categories } from '../../_mocks';
+import { formatCurrency } from '../../utils';
+import { LoadingButton } from '@mui/lab';
+import { getDate } from 'date-fns';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import {
   Box,
   Grid,
@@ -16,14 +24,6 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import { types, categories } from '../../_mocks';
-import { getDate } from 'date-fns';
-import { useCreateMutation, useUpdateMutation } from '../../services/statementService';
-import { formatCurrency } from '../../utils';
 
 const Form = ({ data, open, action, close }) => {
   const [selectAll, setSelectAll] = useState(false);
@@ -37,7 +37,7 @@ const Form = ({ data, open, action, close }) => {
         category: '',
         description: '',
         expectedValue: '',
-        dueDay: null,
+        dueDay: '',
         months: [
           { month: '1', label: 'Jan', checked: false },
           { month: '2', label: 'Fev', checked: false },
@@ -216,7 +216,8 @@ const Form = ({ data, open, action, close }) => {
                   <DatePicker
                     label="Dia de Vencimento"
                     views={['day']}
-                    value={values.dueDay}
+                    format="dd"
+                    value={values.dueDay ? getDate(values.dueDay) : null}
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('dueDay', getDate(date))}
                     name="dueDay"

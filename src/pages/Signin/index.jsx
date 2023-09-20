@@ -1,30 +1,36 @@
 import { LockOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
+import { useSigninMutation } from '../../services/authService';
+import { setCredentials } from '../../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Alert } from '../../components';
+import { LoadingButton } from '@mui/lab';
+import { useState } from 'react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import {
   Grid,
   Typography,
   TextField,
-  Checkbox,
+  // Checkbox,
   Paper,
   Avatar,
-  FormControlLabel,
+  // FormControlLabel,
   Link,
   InputAdornment,
   IconButton,
 } from '@mui/material';
-import { Formik } from 'formik';
-import { useState } from 'react';
-import * as yup from 'yup';
-import { useSigninMutation } from '../services/authService';
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '../redux/authSlice';
 
 const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [signin] = useSigninMutation();
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState({
+    message: '',
+    error: false,
+    visible: false,
+  });
 
   const initialValues = {
     email: '',
@@ -65,31 +71,19 @@ const Signin = () => {
         validationSchema={validations}
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          console.log(values);
-
-          // setTimeout(() => {
-          //   setSubmitting(false);
-          //   resetForm();
-
-          //   navigate('/profile', { replace: true });
-          // });
-
           signin(values)
             .unwrap()
-            .then((response) => {
-              console.log(response);
+            .then(({ message, data }) => {
               setSubmitting(false);
+              setMessage({ message, error: false, visible: true });
 
-              alert(response.message);
-              dispatch(setCredentials(response.data));
+              dispatch(setCredentials(data));
               resetForm();
-              navigate('/profile', { replace: true });
+              navigate('/dashboard', { replace: true });
             })
             .catch((error) => {
-              console.log(error);
               setSubmitting(false);
-              resetForm();
-              alert(error.data.message);
+              setMessage({ message: error.data.message, error: true, visible: true });
             });
         }}
       >
@@ -170,6 +164,13 @@ const Signin = () => {
           </Link>
         </Typography>
       </Grid>
+
+      <Alert
+        open={message.visible}
+        handleClose={() => setMessage((prev) => ({ ...prev, visible: !prev.visible }))}
+        message={message.message}
+        error={message.error}
+      />
     </Grid>
   );
 };

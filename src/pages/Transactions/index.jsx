@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Loader, NoContent, PageHeader } from '../../components';
 import { Box, Button, Chip, IconButton, Paper, TextField, Typography } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
 import { DeleteOutlineOutlined, EditOutlined, VisibilityOutlined } from '@mui/icons-material';
-import Form from './Form';
 import { useListTransactionsQuery, useDeleteTransactionMutation } from '../../services/transactionService';
-import { addMonths } from 'date-fns';
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@mui/icons-material';
+import { Alert, Loader, NoContent, PageHeader } from '../../components';
+import { DataGrid } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
+import { addMonths } from 'date-fns';
+import PropTypes from 'prop-types';
 import ModalBox from './ModalBox';
+import Form from './Form';
 
 /* ======= | DataGrid | ============================================================================== */
-
 const CustomGrid = ({ rows, edit, remove }) => {
   const columns = [
     { field: 'type', headerName: 'Tipo', flex: 0.2 },
@@ -131,9 +130,8 @@ const Transactions = () => {
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [showDialog, setShowDialog] = useState(false);
-  const [dialogAttrs, setDialogAttrs] = useState(null);
-  const [showResume, setShowResume] = useState(null);
+  const [message, setMessage] = useState({ message: '', error: false, visible: false });
+  const [showResume, setShowResume] = useState(false);
   const [drop] = useDeleteTransactionMutation();
 
   const { data, isLoading, isError, isSuccess, refetch } = useListTransactionsQuery(currentDate.toISOString());
@@ -156,9 +154,8 @@ const Transactions = () => {
   };
 
   const handleCloseForm = (response, isError) => {
-    setDialogAttrs({ message: response, error: isError });
+    setMessage({ message: response, error: isError, visible: true });
     setShowForm(false);
-    setShowDialog(true);
   };
 
   const handlePrevMonth = () => {
@@ -176,10 +173,6 @@ const Transactions = () => {
   useEffect(() => {
     if (!showForm) refetch();
   }, [showForm, refetch]);
-
-  const displayMessage = () => {
-    setShowDialog(true);
-  };
 
   return (
     <Box
@@ -236,6 +229,13 @@ const Transactions = () => {
 
       <Form open={showForm} action={handleCloseForm} data={selected} close={() => setShowForm(false)} />
       <ModalBox open={showResume} handleClose={toggleResumeData} list={data?.data} />
+
+      <Alert
+        open={message.visible}
+        handleClose={() => setMessage((prev) => ({ ...prev, visible: !prev.visible }))}
+        message={message.message}
+        error={message.error}
+      />
     </Box>
   );
 };

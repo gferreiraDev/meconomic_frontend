@@ -1,5 +1,12 @@
 import { LockOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
+import { useSignupMutation } from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
+import { useMask } from '@react-input/mask';
 import { LoadingButton } from '@mui/lab';
+import { Alert } from '../../components';
+import { useState } from 'react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import {
   Grid,
   Typography,
@@ -14,15 +21,14 @@ import {
   FormControl,
   FormHelperText,
 } from '@mui/material';
-import { Formik } from 'formik';
-import { useState, forwardRef } from 'react';
-import * as yup from 'yup';
-import { useSignupMutation } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
-import { useMask } from '@react-input/mask';
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState({
+    message: '',
+    error: false,
+    visible: false,
+  });
   const [signup] = useSignupMutation();
   const navigate = useNavigate();
 
@@ -37,7 +43,7 @@ const Signup = () => {
     document: '',
     password: '',
     confirmPassword: '',
-    acceptTerms: true,
+    acceptTerms: false,
   };
 
   const validations = yup.object({
@@ -85,23 +91,17 @@ const Signup = () => {
         validationSchema={validations}
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          console.log(values);
-
           signup(values)
             .unwrap()
-            .then((response) => {
-              console.log(response);
+            .then(({ message }) => {
               setSubmitting(false);
-
-              alert(response.message);
-
+              setMessage({ error: false, message, visible: true });
               resetForm();
               navigate('/signin', { replace: true });
             })
             .catch((error) => {
-              console.log(error);
               setSubmitting(false);
-              alert(error.data.message);
+              setMessage({ error: true, message: error.data.message, visible: true });
             });
         }}
       >
@@ -116,7 +116,7 @@ const Signup = () => {
                 onChange={handleChange('firstName')}
                 onBlur={handleBlur}
                 error={touched.firstName && !!errors.firstName}
-                helperText={errors.firstName}
+                helperText={errors.firstName ? errors.firstName : ''}
                 fullWidth
               />
             </Grid>
@@ -259,6 +259,13 @@ const Signup = () => {
           </Link>
         </Typography>
       </Grid>
+
+      <Alert
+        open={message.visible}
+        handleClose={() => setMessage((prev) => ({ ...prev, visible: !prev.visible }))}
+        message={message.message}
+        error={message.error}
+      />
     </Grid>
   );
 };

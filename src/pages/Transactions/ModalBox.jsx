@@ -52,22 +52,22 @@ const ModalBox = ({ open, handleClose, list }) => {
   });
 
   const calculate = (list) => {
-    const aux = {
-      rf: 0,
-      rv: 0,
-      ra: 0,
-      rp: 0,
-      rq: 0,
-      df: 0,
-      dv: 0,
-      da: 0,
-      dq: 0,
-      dp: 0,
-    };
+    const aux = { ...data };
+    // const aux = {
+    //   rf: 0,
+    //   rv: 0,
+    //   ra: 0,
+    //   rp: 0,
+    //   rq: 0,
+    //   df: 0,
+    //   dv: 0,
+    //   da: 0,
+    //   dq: 0,
+    //   dp: 0,
+    // };
 
     list?.forEach(({ type, status, value }) => {
       let index = type.toLowerCase();
-      console.log(index);
       aux[index] += value;
 
       if (type.startsWith('R')) {
@@ -257,118 +257,6 @@ const ModalBox = ({ open, handleClose, list }) => {
             </Box>
           </Box>
         </Box>
-
-        {/* <Grid container columns={12} rowSpacing={1}>
-          <Grid item xs={12} sx={{ bgcolor: 'greenyellow' }}>
-            Receitas
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Fixas</Typography>
-            <Typography variant="body2">
-              {(2300).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Variáveis</Typography>
-            <Typography variant="body2">
-              {(0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Adicionais</Typography>
-            <Typography variant="body2">
-              {(1960).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Totais</Typography>
-            <Typography variant="body2">
-              {(2300 + 0 + 1960).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Quitadas</Typography>
-            <Typography variant="body2">
-              {(2280).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Pendentes</Typography>
-            <Typography variant="body2">
-              {(4260 - 2280).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12} sx={{ bgcolor: 'salmon' }}>
-            Despesas
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Fixas</Typography>
-            <Typography variant="body2">
-              {(1347).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Variáveis</Typography>
-            <Typography variant="body2">
-              {(349.92).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Adicionais</Typography>
-            <Typography variant="body2">
-              {(114.3).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Totais</Typography>
-            <Typography variant="body2">
-              {(1374 + 349.82 + 114.3).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Quitadas</Typography>
-            <Typography variant="body2">
-              {(1838.12).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Pendentes</Typography>
-            <Typography variant="body2">
-              {(0).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12} sx={{ bgcolor: 'indigo' }}>
-            Total
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Saldo Atual</Typography>
-            <Typography variant="body2">
-              {(2280 - 1838.12).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={2}>
-            <Typography variant="body1">Saldo Previsto</Typography>
-            <Typography variant="body2">
-              {(2280 - 1838.12 + 1980).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-            </Typography>
-          </Grid>
-        </Grid> */}
       </Box>
     </Modal>
   );

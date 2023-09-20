@@ -46,8 +46,6 @@ const ForgotPassword = () => {
         validationSchema={validations}
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          console.log(values);
-
           sendData(values)
             .unwrap()
             .then(() => {
