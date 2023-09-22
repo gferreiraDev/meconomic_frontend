@@ -6,6 +6,7 @@ export const statements = [
     description: 'Supermercado',
     expectedValue: 980.0,
     dueDay: 15,
+    installments: 6,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: false },
@@ -28,6 +29,7 @@ export const statements = [
     description: 'Fatura Cartão Teste Prime',
     expectedValue: 34.99,
     dueDay: 10,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -50,6 +52,7 @@ export const statements = [
     description: 'Conta de Água',
     expectedValue: 120.0,
     dueDay: 25,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -72,6 +75,7 @@ export const statements = [
     description: 'Conta de Luz',
     expectedValue: 90.0,
     dueDay: 12,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -94,6 +98,7 @@ export const statements = [
     description: 'Internet',
     expectedValue: 119.89,
     dueDay: 20,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -116,6 +121,7 @@ export const statements = [
     description: 'Meu Salário Mensal',
     expectedValue: 3500,
     dueDay: 6,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -138,6 +144,7 @@ export const statements = [
     description: 'Supermercado',
     expectedValue: 980.0,
     dueDay: 15,
+    installments: 6,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: false },
@@ -160,6 +167,7 @@ export const statements = [
     description: 'Fatura Cartão Teste Prime',
     expectedValue: 34.99,
     dueDay: 10,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -182,6 +190,7 @@ export const statements = [
     description: 'Conta de Água',
     expectedValue: 120.0,
     dueDay: 25,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -204,6 +213,7 @@ export const statements = [
     description: 'Conta de Luz',
     expectedValue: 90.0,
     dueDay: 12,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -226,6 +236,7 @@ export const statements = [
     description: 'Internet',
     expectedValue: 119.89,
     dueDay: 20,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -248,6 +259,7 @@ export const statements = [
     description: 'Meu Salário Mensal',
     expectedValue: 3500,
     dueDay: 6,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -270,6 +282,7 @@ export const statements = [
     description: 'Meu Salário Mensal',
     expectedValue: 3500,
     dueDay: 6,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -292,6 +305,7 @@ export const statements = [
     description: 'Meu Salário Mensal',
     expectedValue: 3500,
     dueDay: 6,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
@@ -314,6 +328,7 @@ export const statements = [
     description: 'Meu Salário Mensal',
     expectedValue: 3500,
     dueDay: 6,
+    installments: 12,
     months: [
       { month: '1', label: 'Jan', checked: true },
       { month: '2', label: 'Fev', checked: true },
