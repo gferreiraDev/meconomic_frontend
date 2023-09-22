@@ -14,6 +14,7 @@ import {
   Transactions,
   Profile,
   Wallet,
+  NotFound,
 } from '../pages';
 
 const Router = () => {
@@ -42,9 +43,10 @@ const Router = () => {
         { path: 'transactions', element: <Transactions /> },
         { path: 'targets', element: <Targets /> },
         { path: 'profile', element: <Profile /> },
+        { path: '404', element: <NotFound /> },
       ],
     },
-    // { path: '*', element: <Navigate to="/signin" replace /> },
+    { path: '*', element: <Navigate to="/404" replace /> },
   ]);
 
   return routes;

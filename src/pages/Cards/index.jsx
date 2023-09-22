@@ -1,134 +1,11 @@
+// import { useNavigate } from 'react-router-dom';
 import { useDeleteCardMutation, useListCardsQuery } from '../../services/cardService';
-import { DeleteOutlineOutlined, EditOutlined } from '@mui/icons-material';
-import { Alert, Loader, NoContent, PageHeader } from '../../components';
-import { useNavigate } from 'react-router-dom';
+import { Alert, Loader, PageHeader } from '../../components';
 import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import Form from './Form';
-import { Box, Grid, Typography, IconButton, Card, Chip, CardContent, CardActions, CardActionArea } from '@mui/material';
+import { Box } from '@mui/material';
+import List from './List';
 
-/* ======= | List | ============================================================================== */
-const CardsList = ({ rows, edit, remove }) => {
-  const navigate = useNavigate();
-
-  return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '80vh',
-        mt: 2,
-        overflowY: 'auto',
-      }}
-    >
-      {rows.map((card) => (
-        <Card key={card.id} sx={{ display: { xs: 'block', md: 'flex' }, flexDirection: 'row', width: '100%', mb: 1 }}>
-          <CardActionArea onClick={() => navigate(`/invoices/${card?.id}`)}>
-            <CardContent sx={{ p: { xs: 1, md: 1.5 } }}>
-              <Grid container columns={12} spacing={1}>
-                <Grid item xs={2} sx={{ display: { xs: 'none', lg: 'block' } }}>
-                  <Box sx={{ height: 80, p: 1, borderRadius: 2, bgcolor: '#00000033' }}>
-                    <Typography variant="body2">****.****.****.{card?.lastNumbers}</Typography>
-                    <Typography variant="body2">{card?.expiryDate}</Typography>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={4} md={2}>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                    Nome do Cartão
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontStyle: 'italic', ml: 1 }}>
-                    {card?.name}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={4} md={2}>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                    Limite Total
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontStyle: 'italic', ml: 1 }}>
-                    {card?.limit.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={4} md={2}>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                    Limite Disponível
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontStyle: 'italic', ml: 1 }}>
-                    {card?.currentLimit.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={4} md={1.5}>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                    Anuidade
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontStyle: 'italic', ml: 1 }}>
-                    {card?.annuity.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: '#aaa' }}>
-                    12x {(card?.annuity / 12).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={4} md={1.5}>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                    Taxas
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontStyle: 'italic', ml: 1 }}>
-                    {card?.fees.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: '#aaa' }}>
-                    12x {(card?.fees / 12).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={4} md={1}>
-                  <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                    Status
-                  </Typography>
-                  <Chip
-                    variant="outlined"
-                    size="small"
-                    color={card?.status === 'Ativo' ? 'success' : card?.status === 'Bloqueado' ? 'error' : 'info'}
-                    label={card?.status}
-                  />
-                  <Typography variant="body2">{}</Typography>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </CardActionArea>
-
-          <CardActions
-            sx={{
-              display: 'flex',
-              flexDirection: { xs: 'row', md: 'column' },
-              alignItems: 'center',
-              justifyContent: { xs: 'flex-end', md: 'space-around' },
-              p: { xs: 0 },
-            }}
-          >
-            <IconButton size="small" onClick={() => edit(card)}>
-              <EditOutlined fontSize="inherit" />
-            </IconButton>
-
-            <IconButton size="small" onClick={() => remove(card)}>
-              <DeleteOutlineOutlined fontSize="inherit" />
-            </IconButton>
-          </CardActions>
-        </Card>
-      ))}
-    </Box>
-  );
-};
-
-CardsList.propTypes = {
-  rows: PropTypes.array,
-  edit: PropTypes.func,
-  remove: PropTypes.func,
-};
-
-/* ======= | Page | ============================================================================== */
 const Cards = () => {
   const [drop] = useDeleteCardMutation();
   const [showForm, setShowForm] = useState(false);
@@ -141,13 +18,18 @@ const Cards = () => {
     setShowForm(true);
   };
 
-  const handleRemove = (value) => {
-    drop({ id: value.id })
+  const handleDelete = () => {
+    if (!selected) return;
+
+    drop({ id: selected.id })
       .unwrap()
-      .then((response) => {
-        refetch();
+      .then(({ message }) => {
+        setMessage({ message, error: false, visible: true });
       })
-      .catch((error) => setMessage({ message: error.data.message, error: true, visible: true }));
+      .catch((error) => setMessage({ message: error.data.message, error: true, visible: true }))
+      .finally(() => {
+        refetch();
+      });
   };
 
   const handleCloseForm = (response, isError) => {
@@ -175,11 +57,24 @@ const Cards = () => {
 
       {isLoading ? (
         <Loader />
-      ) : isSuccess && data && data?.data?.length ? (
-        <CardsList rows={data.data} edit={handleSelect} remove={handleRemove} />
-      ) : (
-        <NoContent text="Nenhum conteúdo a ser exibido" action={() => refetch()} actionLabel="Recarregar" />
-      )}
+      ) : isSuccess && data ? (
+        <List
+          columns={[
+            { id: 'name', label: 'Nome', align: 'left', format: 'text' },
+            { id: 'limit', label: 'Limite Total', align: 'center', format: 'currency' },
+            { id: 'currentLimit', label: 'Limite Disponível', align: 'center', format: 'currency' },
+            { id: 'annuity', label: 'Anuidade', align: 'center', format: 'currency' },
+            { id: 'fees', label: 'Taxas', align: 'center', format: 'currency' },
+            { id: 'expiryDate', label: 'Validade', align: 'center', format: 'text' },
+            { id: 'status', label: 'Status', align: 'center', format: 'text' },
+          ]}
+          rows={data.data}
+          selected={selected}
+          setSelected={setSelected}
+          onEdit={() => setShowForm(true)}
+          onDelete={handleDelete}
+        />
+      ) : null}
 
       <Form open={showForm} action={handleCloseForm} data={selected} close={() => setShowForm(false)} />
       <Alert

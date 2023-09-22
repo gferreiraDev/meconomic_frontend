@@ -22,10 +22,10 @@ const Statements = () => {
 
     drop({ id: selected.id })
       .unwrap()
-      .then((response) => {
-        console.log(response);
+      .then(({ message }) => {
+        setMessage({ message, error: false, visible: true });
       })
-      .catch((error) => console.log(error))
+      .catch((error) => setMessage({ message: error.data.message, error: true, visible: true }))
       .finally(() => {
         refetch();
       });
@@ -43,7 +43,6 @@ const Statements = () => {
   return (
     <Box
       sx={{
-        border: 'solid 2px #fff',
         flex: 1,
         p: 2,
       }}

@@ -12,3 +12,4 @@ export { default as Wallet } from './Wallet';
 export { default as Dashboard } from './Dashboard';
 export { default as Investments } from './Investments';
 export { default as Targets } from './Targets';
+export { default as NotFound } from './NotFound';
