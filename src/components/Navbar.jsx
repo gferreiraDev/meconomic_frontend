@@ -1,4 +1,4 @@
-import { Box, Divider, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Box, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
@@ -17,9 +17,10 @@ import {
   DarkModeOutlined,
   LightModeOutlined,
 } from '@mui/icons-material';
+import { useState } from 'react';
 
 /* ===== | NavItem | ================================================================== */
-const NavItem = ({ item, ...props }) => {
+const NavItem = ({ item, collapsed, ...props }) => {
   const { title, icon } = item;
 
   return (
@@ -27,16 +28,16 @@ const NavItem = ({ item, ...props }) => {
       // component={NavLink}
       // to={target}
       sx={{
-        height: 48,
         position: 'relative',
         textTransform: 'capitalize',
         color: '#1f2a40',
         borderRadius: 5,
         '&:hover': {
-          backgroundColor: '#',
+          backgroundColor: '#4cceac',
         },
         '&.active': {
-          color: '#47caff',
+          // color: '#47caff',
+          color: '#4cceac',
           fontWeight: 'bold',
         },
       }}
@@ -54,18 +55,21 @@ const NavItem = ({ item, ...props }) => {
       >
         {icon}
       </ListItemIcon>
-
-      <ListItemText disableTypography primary={title} />
+      {!collapsed && <ListItemText disableTypography primary={title} />}
     </ListItemButton>
   );
 };
 
 NavItem.propTypes = {
   item: PropTypes.object,
+  collapsed: PropTypes.bool,
 };
 
 /* ===== | NavBar | ================================================================== */
 const Navbar = ({ ...props }) => {
+  const [collapsed, setCollapsed] = useState(true);
+  const [selected, setSelected] = useState('Dashboard');
+
   const menuItens = [
     { title: 'Dashboard', target: '/dashboard', icon: <AutoGraphOutlined /> },
     { title: 'Registros', target: '/statements', icon: <AutoStoriesOutlined /> },
@@ -88,20 +92,44 @@ const Navbar = ({ ...props }) => {
         bgcolor: '#fcfcfc',
         height: '100vh',
         display: { xs: 'none', md: 'block' },
+        width: collapsed ? 60 : 200,
       }}
       {...props}
     >
-      <List>
-        <Typography variant="h6" sx={{ textAlign: 'center', color: '#47caff' }}>
-          Meconomic
-        </Typography>
+      <List
+        disablePadding
+        sx={{
+          bgcolor: 'salmon',
+          height: '100%',
+          border: 'solid 1px #f00',
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+        }}
+      >
+        <ListItemButton
+          onClick={() => setCollapsed((prev) => !prev)}
+          sx={{
+            bgcolor: '#fcfcfc',
+            color: '#000',
+            justifyContent: 'space-between',
+            '& :hover': {
+              bgcolor: '#c3c6fd',
+            },
+          }}
+        >
+          <Typography variant="h6">{collapsed ? 'm€' : 'm€conomic'}</Typography>
 
-        <Divider variant="middle" orientation="horizontal" />
+          <MenuOutlined />
+        </ListItemButton>
+        {/* <ListItem sx={{ color: '#47caff', bgcolor: '#fcfcfc', justifyContent: 'space-between' }}>
+        </ListItem> */}
+
+        <Divider variant="fullWidth" orientation="horizontal" />
 
         {menuItens.map((item, idx) => (
           <NavItem key={idx} item={item} component={NavLink} to={item.target} />
         ))}
-
         <Divider variant="middle" orientation="horizontal" />
 
         <NavItem item={{ title: 'LightMode', icon: <LightModeOutlined /> }} onClick={toggleTheme} />

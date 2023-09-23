@@ -1,14 +1,14 @@
+import { useUpdateUserMutation, useDeleteUserMutation } from '../../services/authService';
+import { getUser, updateCredentials, clearCredentials } from '../../redux/authSlice';
 import { Box, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import { PowerSettingsNewOutlined } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUser, updateCredentials, clearCredentials } from '../../redux/authSlice';
-import { useUpdateUserMutation, useDeleteUserMutation, useSignoutMutation } from '../../services/authService';
-import Form from './Form';
+import { useNavigate } from 'react-router-dom';
+import { LoadingButton } from '@mui/lab';
+import { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import Form from './Form';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Profile = () => {
   const [showForm, setShowForm] = useState(false);
   const [update] = useUpdateUserMutation();
   const [remove] = useDeleteUserMutation();
-  const [signout] = useSignoutMutation();
+  // const [signout] = useSignoutMutation();
 
   const validations = yup.object({
     firstName: yup.string().min(3, 'Nome muito curto').required('Nome é obrigatório'),
@@ -48,20 +48,20 @@ const Profile = () => {
       });
   };
 
-  const handleLogout = () => {
-    dispatch(clearCredentials());
-    navigate('/signin', { replace: true });
-  };
+  // const handleLogout = () => {
+  //   dispatch(clearCredentials());
+  //   navigate('/signin', { replace: true });
+  // };
 
   return (
     <Box sx={{ border: 'solid 2px #fff', flex: 1, p: 2 }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h4">Olá, {user.firstName}!</Typography>
 
-        <Button size="small" variant="contained" color="secondary" onClick={handleLogout} sx={{ alignItems: 'center' }}>
+        {/* <Button size="small" variant="contained" color="secondary" onClick={handleLogout} sx={{ alignItems: 'center' }}>
           <PowerSettingsNewOutlined sx={{ width: 16, height: 16, pr: 2 }} />
           Sair
-        </Button>
+        </Button> */}
       </Box>
 
       <Formik

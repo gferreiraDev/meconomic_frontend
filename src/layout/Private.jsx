@@ -3,6 +3,7 @@ import { Container } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { getUser } from '../redux/authSlice';
 import { Navbar } from '../components';
+import SideNav from '../components/SideNav';
 
 const Private = () => {
   const user = useSelector(getUser);
@@ -18,7 +19,8 @@ const Private = () => {
         display: 'flex',
       }}
     >
-      <Navbar />
+      {/* <Navbar /> */}
+      <SideNav />
 
       <Outlet />
     </Container>
