@@ -24,12 +24,11 @@ const LineChart = ({ title, subtitle, labels, data, ...props }) => {
   });
 
   return (
-    <Card sx={{ bgcolor: '#ffffff19' }} {...props}>
+    <Card sx={{ bgcolor: 'paper' }} {...props}>
       <CardHeader
         sx={{
-          color: '#4cceac',
+          color: 'accent',
           '& .MuiCardHeader-subheader': {
-            color: '#fff',
             ml: 2,
           },
         }}
@@ -38,7 +37,12 @@ const LineChart = ({ title, subtitle, labels, data, ...props }) => {
       />
 
       <Box sx={{ p: 1 }}>
-        <ReactApexChart type="line" series={data} options={options} height={320} />
+        <ReactApexChart
+          type="line"
+          series={data}
+          options={options}
+          height={320}
+        />
       </Box>
     </Card>
   );

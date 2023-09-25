@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { apiService } from '../services/apiService';
 import authSlice from './authSlice';
+import themeSlice from './themeSlice';
 
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
@@ -13,6 +14,7 @@ const persistConfig = {
 const rootReducers = combineReducers({
   [apiService.reducerPath]: apiService.reducer,
   auth: authSlice,
+  theme: themeSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducers);

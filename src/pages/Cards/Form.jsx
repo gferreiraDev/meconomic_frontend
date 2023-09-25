@@ -1,4 +1,7 @@
-import { useCreateCardMutation, useUpdateCardMutation } from '../../services/cardService';
+import {
+  useCreateCardMutation,
+  useUpdateCardMutation,
+} from '../../services/cardService';
 import { brands, chargeRules, cardStatus } from '../../_mocks';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { getDate, format } from 'date-fns';
@@ -47,8 +50,16 @@ const Form = ({ data, open, action, close }) => {
     brand: yup.string().required('Campo obrigatório'),
     lastNumbers: yup.string().required('Campo obrigatório'),
     limit: yup.string().min(0, 'Valor inválido').required('Campo obrigatório'),
-    closingDay: yup.number().min(1, 'Valor inválido').max(31, 'Valor inválido').required('Campo obrigatório'),
-    dueDay: yup.number().min(1, 'Valor inválido').max(31, 'Valor inválido').required('Campo obrigatório'),
+    closingDay: yup
+      .number()
+      .min(1, 'Valor inválido')
+      .max(31, 'Valor inválido')
+      .required('Campo obrigatório'),
+    dueDay: yup
+      .number()
+      .min(1, 'Valor inválido')
+      .max(31, 'Valor inválido')
+      .required('Campo obrigatório'),
     annuity: yup.string().required('Campo obrigatório'),
     fees: yup.string().required('Campo obrigatório'),
     chargeRule: yup.string().required('Campo obrigatório'),
@@ -96,9 +107,19 @@ const Form = ({ data, open, action, close }) => {
         }}
         enableReinitialize
       >
-        {({ errors, isSubmitting, values, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
+        {({
+          errors,
+          isSubmitting,
+          values,
+          touched,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          setFieldValue,
+        }) => (
           <Box
             sx={{
+              bgcolor: 'neutral.main',
               width: 430,
               height: '100%',
               display: 'flex',
@@ -109,7 +130,9 @@ const Form = ({ data, open, action, close }) => {
               overflowX: 'hidden',
             }}
           >
-            <Typography variant="h5">Novo Cartão</Typography>
+            <Typography variant="h5">
+              {values?.id ? 'Editar Cartão' : 'Novo Cartão'}
+            </Typography>
 
             <Grid container columns={4} spacing={2} sx={{ p: 2 }}>
               <Grid item xs={4}>
@@ -129,7 +152,12 @@ const Form = ({ data, open, action, close }) => {
               <Grid item xs={2}>
                 <FormControl fullWidth error={!!errors.brand}>
                   <InputLabel>Bandeira</InputLabel>
-                  <Select label="Tipo" onChange={handleChange} name="brand" value={values.brand}>
+                  <Select
+                    label="Tipo"
+                    onChange={handleChange}
+                    name="brand"
+                    value={values.brand}
+                  >
                     <MenuItem value="">Selecione</MenuItem>
                     {brands.map((brand) => (
                       <MenuItem key={brand.id} value={brand.label}>
@@ -167,7 +195,9 @@ const Form = ({ data, open, action, close }) => {
                   error={touched.limit && !!errors.limit}
                   helperText={errors.limit}
                   InputProps={{
-                    startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                    startAdornment: (
+                      <InputAdornment position="start">R$</InputAdornment>
+                    ),
                   }}
                 />
               </Grid>
@@ -180,7 +210,9 @@ const Form = ({ data, open, action, close }) => {
                     value={stringToDate(values.expiryDate)}
                     format="MM/yy"
                     onBlur={handleBlur}
-                    onChange={(date) => setFieldValue('expiryDate', format(date, 'MM/yy'))}
+                    onChange={(date) =>
+                      setFieldValue('expiryDate', format(date, 'MM/yy'))
+                    }
                     name="expiryDate"
                     error={!!errors.expiryDate}
                   />
@@ -196,7 +228,9 @@ const Form = ({ data, open, action, close }) => {
                     // format="DD"
                     value={getDate(values.closingDay)}
                     onBlur={handleBlur}
-                    onChange={(date) => setFieldValue('closingDay', getDate(date))}
+                    onChange={(date) =>
+                      setFieldValue('closingDay', getDate(date))
+                    }
                     name="closingDay"
                     error={!!errors.closingDay}
                   />
@@ -231,7 +265,9 @@ const Form = ({ data, open, action, close }) => {
                   error={!!errors.annuity}
                   helperText={errors.annuity}
                   InputProps={{
-                    startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                    startAdornment: (
+                      <InputAdornment position="start">R$</InputAdornment>
+                    ),
                   }}
                 />
               </Grid>
@@ -248,7 +284,9 @@ const Form = ({ data, open, action, close }) => {
                   error={!!errors.fees}
                   helperText={errors.fees}
                   InputProps={{
-                    startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                    startAdornment: (
+                      <InputAdornment position="start">R$</InputAdornment>
+                    ),
                   }}
                 />
               </Grid>
@@ -256,7 +294,11 @@ const Form = ({ data, open, action, close }) => {
               <Grid item xs={2}>
                 <FormControl fullWidth error={!!errors.chargeRule}>
                   <InputLabel>Tipo de Cobrança</InputLabel>
-                  <Select onChange={handleChange} name="chargeRule" value={values.chargeRule}>
+                  <Select
+                    onChange={handleChange}
+                    name="chargeRule"
+                    value={values.chargeRule}
+                  >
                     <MenuItem value="">Selecione</MenuItem>
                     {chargeRules.map((rule) => (
                       <MenuItem key={rule.id} value={rule.value}>
@@ -271,7 +313,11 @@ const Form = ({ data, open, action, close }) => {
               <Grid item xs={2}>
                 <FormControl fullWidth error={!!errors.status}>
                   <InputLabel>Status</InputLabel>
-                  <Select onChange={handleChange} name="status" value={values.status}>
+                  <Select
+                    onChange={handleChange}
+                    name="status"
+                    value={values.status}
+                  >
                     <MenuItem value="">Selecione</MenuItem>
                     {cardStatus.map((status) => (
                       <MenuItem key={status.id} value={status.label}>
@@ -296,7 +342,12 @@ const Form = ({ data, open, action, close }) => {
               <LoadingButton variant="outlined" color="inherit" onClick={close}>
                 Cancelar
               </LoadingButton>
-              <LoadingButton loading={isSubmitting} variant="contained" color="primary" onClick={handleSubmit}>
+              <LoadingButton
+                loading={isSubmitting}
+                variant="contained"
+                color="accent"
+                onClick={handleSubmit}
+              >
                 Salvar
               </LoadingButton>
             </Box>

@@ -15,7 +15,11 @@ const PieChart = ({ title, subtitle, data, ...props }) => {
     tooltip: {
       fillSeriesColor: false,
       y: {
-        formatter: (seriesName) => seriesName.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }),
+        formatter: (seriesName) =>
+          seriesName.toLocaleString('pt-br', {
+            style: 'currency',
+            currency: 'BRL',
+          }),
         title: {
           formatter: (seriesName) => `${seriesName}`,
         },
@@ -27,14 +31,13 @@ const PieChart = ({ title, subtitle, data, ...props }) => {
   });
 
   return (
-    <Card sx={{ bgcolor: '#ffffff19' }} {...props}>
+    <Card sx={{ bgcolor: 'paper' }} {...props}>
       <CardHeader
         title={title}
         subheader={subtitle}
         sx={{
-          color: '#4cceac',
+          color: 'accent',
           '& .MuiCardHeader-subheader': {
-            color: '#fff',
             ml: 2,
           },
         }}

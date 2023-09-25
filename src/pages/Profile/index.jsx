@@ -1,9 +1,16 @@
-import { useUpdateUserMutation, useDeleteUserMutation } from '../../services/authService';
-import { getUser, updateCredentials, clearCredentials } from '../../redux/authSlice';
-import { Box, Button, Grid, Paper, TextField, Typography } from '@mui/material';
-import { PowerSettingsNewOutlined } from '@mui/icons-material';
+import {
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} from '../../services/authService';
+import {
+  getUser,
+  updateCredentials,
+  clearCredentials,
+} from '../../redux/authSlice';
+import { Button, Grid, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { PageHeader } from '../../components';
 import { LoadingButton } from '@mui/lab';
 import { useState } from 'react';
 import { Formik } from 'formik';
@@ -18,12 +25,20 @@ const Profile = () => {
   const [showForm, setShowForm] = useState(false);
   const [update] = useUpdateUserMutation();
   const [remove] = useDeleteUserMutation();
-  // const [signout] = useSignoutMutation();
 
   const validations = yup.object({
-    firstName: yup.string().min(3, 'Nome muito curto').required('Nome é obrigatório'),
-    lastName: yup.string().min(3, 'Sobrenome muito curto').required('Sobrenome é obrigatório'),
-    email: yup.string().email('Formato inválido').required('E-mail é obrigatório'),
+    firstName: yup
+      .string()
+      .min(3, 'Nome muito curto')
+      .required('Nome é obrigatório'),
+    lastName: yup
+      .string()
+      .min(3, 'Sobrenome muito curto')
+      .required('Sobrenome é obrigatório'),
+    email: yup
+      .string()
+      .email('Formato inválido')
+      .required('E-mail é obrigatório'),
     phone: yup.string().required('Telefone é obrigatório'),
     document: yup
       .string()
@@ -48,21 +63,9 @@ const Profile = () => {
       });
   };
 
-  // const handleLogout = () => {
-  //   dispatch(clearCredentials());
-  //   navigate('/signin', { replace: true });
-  // };
-
   return (
-    <Box sx={{ border: 'solid 2px #fff', flex: 1, p: 2 }}>
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="h4">Olá, {user.firstName}!</Typography>
-
-        {/* <Button size="small" variant="contained" color="secondary" onClick={handleLogout} sx={{ alignItems: 'center' }}>
-          <PowerSettingsNewOutlined sx={{ width: 16, height: 16, pr: 2 }} />
-          Sair
-        </Button> */}
-      </Box>
+    <>
+      <PageHeader title="Perfil" subtitle={`Olá, ${user.firstName}`} />
 
       <Formik
         initialValues={user}
@@ -74,7 +77,6 @@ const Profile = () => {
           update(values)
             .unwrap()
             .then((response) => {
-              // console.log(response.message);
               dispatch(updateCredentials(response.data));
               alert(response.message);
             })
@@ -88,12 +90,24 @@ const Profile = () => {
             });
         }}
       >
-        {({ values, errors, isSubmitting, handleChange, touched, handleSubmit }) => (
+        {({
+          values,
+          errors,
+          isSubmitting,
+          handleChange,
+          touched,
+          handleSubmit,
+        }) => (
           <Grid
             container
-            component={Paper}
             elevation={10}
-            sx={{ margin: '40px auto', width: '80%', p: 2 }}
+            sx={{
+              margin: '40px auto',
+              width: '80%',
+              p: 2,
+              bgcolor: 'paper',
+              borderRadius: 2,
+            }}
             columns={4}
             rowSpacing={4}
             columnSpacing={1}
@@ -159,26 +173,48 @@ const Profile = () => {
             </Grid>
 
             {isEditing ? (
-              <Grid item xs={4} sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="inherit"
+                  onClick={handleCancelEditing}
+                  sx={{ mx: 2 }}
+                >
+                  Cancelar
+                </Button>
+
                 <LoadingButton
                   size="small"
                   loading={isSubmitting}
-                  variant="outlined"
-                  color="primary"
+                  variant="contained"
+                  color="accent"
                   onClick={handleSubmit}
                 >
                   Salvar
                 </LoadingButton>
-
-                <Button size="small" variant="outlined" color="inherit" onClick={handleCancelEditing} sx={{ mx: 2 }}>
-                  Cancelar
-                </Button>
               </Grid>
             ) : (
-              <Grid item xs={4} sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+              >
                 <Button
                   size="small"
-                  variant="contained"
+                  variant="outlined"
                   color="warning"
                   onClick={() => setShowForm(true)}
                   sx={{ mx: 4 }}
@@ -186,11 +222,22 @@ const Profile = () => {
                   Alterar Senha
                 </Button>
 
-                <Button size="small" variant="outlined" color="primary" onClick={() => setIsEditing(!isEditing)}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="accent"
+                  onClick={() => setIsEditing(!isEditing)}
+                >
                   Editar
                 </Button>
 
-                <Button size="small" variant="outlined" color="error" onClick={handleDeleteUser} sx={{ mx: 2 }}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="error"
+                  onClick={handleDeleteUser}
+                  sx={{ mx: 2 }}
+                >
                   Excluir
                 </Button>
               </Grid>
@@ -200,7 +247,7 @@ const Profile = () => {
       </Formik>
 
       <Form visible={showForm} setVisible={setShowForm} />
-    </Box>
+    </>
   );
 };
 

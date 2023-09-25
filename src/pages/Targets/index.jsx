@@ -13,13 +13,7 @@ const Targets = () => {
   }, [loading]);
 
   return (
-    <Box
-      sx={{
-        border: 'solid 2px #fff',
-        flex: 1,
-        p: 2,
-      }}
-    >
+    <>
       <PageHeader
         title="Minhas Metas"
         subtitle="Planejamento das realiações"
@@ -32,7 +26,7 @@ const Targets = () => {
       ) : (
         <NoContent text="Nenhum conteúdo a ser exibido" action={() => setLoading(true)} actionLabel="Recarregar" />
       )}
-    </Box>
+    </>
   );
 };
 

@@ -1,4 +1,7 @@
-import { useCreateMutation, useUpdateMutation } from '../../services/statementService';
+import {
+  useCreateMutation,
+  useUpdateMutation,
+} from '../../services/statementService';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { types, categories } from '../../_mocks';
 import { formatCurrency } from '../../utils';
@@ -62,7 +65,11 @@ const Form = ({ data, open, action, close }) => {
     category: yup.string().required('Campo obrigatório'),
     description: yup.string().required('Campo obrigatório'),
     expectedValue: yup.string().required('Campo obrigatório'),
-    dueDay: yup.number().min(1, 'Valor inválido').max(31, 'Valor inválido').required('Campo obrigatório'),
+    dueDay: yup
+      .number()
+      .min(1, 'Valor inválido')
+      .max(31, 'Valor inválido')
+      .required('Campo obrigatório'),
     months: yup
       .array()
       .of(
@@ -104,7 +111,10 @@ const Form = ({ data, open, action, close }) => {
           const dados = {
             ...values,
             expectedValue: formatCurrency(values.expectedValue),
-            installments: values.months.reduce((sum, month) => (sum += month.checked ? 1 : 0), 0),
+            installments: values.months.reduce(
+              (sum, month) => (sum += month.checked ? 1 : 0),
+              0
+            ),
           };
 
           if (values.id) {
@@ -136,9 +146,19 @@ const Form = ({ data, open, action, close }) => {
         }}
         enableReinitialize
       >
-        {({ errors, isSubmitting, values, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
+        {({
+          errors,
+          isSubmitting,
+          values,
+          touched,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          setFieldValue,
+        }) => (
           <Box
             sx={{
+              bgcolor: 'neutral.main',
               width: 430,
               height: '100%',
               display: 'flex',
@@ -155,7 +175,12 @@ const Form = ({ data, open, action, close }) => {
               <Grid item xs={2}>
                 <FormControl fullWidth error={!!errors.type}>
                   <InputLabel>Tipo</InputLabel>
-                  <Select label="Tipo" onChange={handleChange} name="type" value={values.type}>
+                  <Select
+                    label="Tipo"
+                    onChange={handleChange}
+                    name="type"
+                    value={values.type}
+                  >
                     {types.map((type) => (
                       <MenuItem key={type.id} value={type.label}>
                         {type.description}
@@ -169,7 +194,11 @@ const Form = ({ data, open, action, close }) => {
               <Grid item xs={2}>
                 <FormControl fullWidth error={!!errors.category}>
                   <InputLabel>Categoria</InputLabel>
-                  <Select onChange={handleChange} name="category" value={values.category}>
+                  <Select
+                    onChange={handleChange}
+                    name="category"
+                    value={values.category}
+                  >
                     {categories.map((category) => (
                       <MenuItem key={category.id} value={category.label}>
                         {category.label}
@@ -206,13 +235,18 @@ const Form = ({ data, open, action, close }) => {
                   error={touched.expectedValue && !!errors.expectedValue}
                   helperText={errors.expectedValue}
                   InputProps={{
-                    startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                    startAdornment: (
+                      <InputAdornment position="start">R$</InputAdornment>
+                    ),
                   }}
                 />
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={touched.dueDay && !!errors.dueDay}>
+                <FormControl
+                  fullWidth
+                  error={touched.dueDay && !!errors.dueDay}
+                >
                   <DatePicker
                     label="Dia de Vencimento"
                     views={['day']}
@@ -233,10 +267,24 @@ const Form = ({ data, open, action, close }) => {
                   <FormControlLabel
                     label="Selecionar todos"
                     control={
-                      <Checkbox checked={selectAll} onChange={() => toggleSelectAll(values.months, setFieldValue)} />
+                      <Checkbox
+                        checked={selectAll}
+                        onChange={() =>
+                          toggleSelectAll(values.months, setFieldValue)
+                        }
+                      />
                     }
                   />
-                  <Grid container columns={4} gap={2} sx={{ bgcolor: '#d1d1d1', p: 1 }}>
+                  <Grid
+                    container
+                    columns={4}
+                    gap={2}
+                    sx={{
+                      border: 'solid 1px #ccc',
+                      justifyContent: 'center',
+                      p: 1,
+                    }}
+                  >
                     {values.months.map((month) => (
                       <FormControlLabel
                         key={month.month}
@@ -244,7 +292,9 @@ const Form = ({ data, open, action, close }) => {
                         control={
                           <Checkbox
                             checked={month.checked}
-                            onChange={() => handleSelect(values.months, month, setFieldValue)}
+                            onChange={() =>
+                              handleSelect(values.months, month, setFieldValue)
+                            }
                           />
                         }
                       />
@@ -267,7 +317,12 @@ const Form = ({ data, open, action, close }) => {
               <LoadingButton variant="outlined" color="inherit" onClick={close}>
                 Cancelar
               </LoadingButton>
-              <LoadingButton loading={isSubmitting} variant="contained" color="primary" onClick={handleSubmit}>
+              <LoadingButton
+                loading={isSubmitting}
+                variant="contained"
+                color="accent"
+                onClick={handleSubmit}
+              >
                 Salvar
               </LoadingButton>
             </Box>

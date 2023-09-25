@@ -1,8 +1,17 @@
-import { Sidebar, Menu, MenuItem, sidebarClasses, menuClasses } from 'react-pro-sidebar';
+import { themeMode, toggleTheme } from '../redux/themeSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { clearCredentials } from '../redux/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { Divider, Typography, styled } from '@mui/material';
 import { useState } from 'react';
+import Logo from './Logo';
+import {
+  Sidebar,
+  Menu,
+  MenuItem,
+  sidebarClasses,
+  menuClasses,
+} from 'react-pro-sidebar';
 import {
   AccountBalanceWalletOutlined,
   AutoStoriesOutlined,
@@ -17,9 +26,24 @@ import {
   DarkModeOutlined,
   LightModeOutlined,
 } from '@mui/icons-material';
-import { Divider, Typography } from '@mui/material';
+
+const NavContainer = styled(Sidebar)(({ theme }) => ({
+  [`.${sidebarClasses.container}`]: {
+    backgroundColor: theme.palette.secondary.main,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  [`.${menuClasses.button} :hover`]: {
+    backgroundColor: theme.palette.accent.main,
+  },
+  [`.${menuClasses.active}`]: {
+    color: theme.palette.accent.main,
+  },
+}));
 
 const SideNav = () => {
+  const theme = useSelector(themeMode);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [selected, setSelected] = useState('Dashboard');
   const navigate = useNavigate();
@@ -30,39 +54,48 @@ const SideNav = () => {
     navigate('/signin', { replace: true });
   };
 
+  const toggleMode = () => {
+    dispatch(toggleTheme());
+    console.log(theme);
+  };
+
   const menuItens = [
     { title: 'Dashboard', target: 'dashboard', icon: <AutoGraphOutlined /> },
     { title: 'Registros', target: 'statements', icon: <AutoStoriesOutlined /> },
-    { title: 'Lançamentos', target: 'transactions', icon: <CurrencyExchangeOutlined /> },
+    {
+      title: 'Lançamentos',
+      target: 'transactions',
+      icon: <CurrencyExchangeOutlined />,
+    },
     { title: 'Cartões', target: 'cards', icon: <CreditCardOutlined /> },
     { title: 'Faturas', target: 'invoices/all', icon: <SellOutlined /> },
-    { title: 'Carteira', target: 'wallet', icon: <AccountBalanceWalletOutlined /> },
-    { title: 'Investimentos', target: 'investments', icon: <SavingsOutlined /> },
+    {
+      title: 'Carteira',
+      target: 'wallet',
+      icon: <AccountBalanceWalletOutlined />,
+    },
+    {
+      title: 'Investimentos',
+      target: 'investments',
+      icon: <SavingsOutlined />,
+    },
     { title: 'Metas', target: 'targets', icon: <BeenhereOutlined /> },
     { title: 'Perfil', target: 'profile', icon: <PersonOutlineOutlined /> },
   ];
 
   return (
-    <Sidebar
-      collapsed={isCollapsed}
-      rootStyles={{
-        [`.${sidebarClasses.container}`]: {
-          backgroundColor: '#4349577a',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        },
-        [`.${menuClasses.menuItemRoot} :hover`]: {
-          backgroundColor: '#c3c6fd',
-        },
-        [`.${menuClasses.active}`]: {
-          color: '#4cceac',
-        },
-      }}
-    >
+    <NavContainer collapsed={isCollapsed}>
       <Menu>
-        <MenuItem onClick={() => setIsCollapsed((prev) => !prev)}>{isCollapsed ? 'm€' : 'm€conomic'}</MenuItem>
-        <Divider variant="fullWidth" sx={{ borderColor: '#fff' }} />
+        <MenuItem
+          onClick={() => setIsCollapsed((prev) => !prev)}
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+        >
+          <Logo short={isCollapsed} />
+        </MenuItem>
+        <Divider variant="fullWidth" />
       </Menu>
 
       <Menu>
@@ -77,16 +110,27 @@ const SideNav = () => {
             <Typography variant="caption">{item.title}</Typography>
           </MenuItem>
         ))}
+
+        <MenuItem
+          icon={
+            theme === 'light' ? <DarkModeOutlined /> : <LightModeOutlined />
+          }
+          onClick={toggleMode}
+        >
+          <Typography variant="caption">
+            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+          </Typography>
+        </MenuItem>
       </Menu>
 
       <Menu>
-        <Divider variant="fullWidth" sx={{ borderColor: '#fff' }} />
+        <Divider variant="fullWidth" />
 
         <MenuItem icon={<PowerSettingsNewOutlined />} onClick={handleLogout}>
           <Typography variant="caption">Sair</Typography>
         </MenuItem>
       </Menu>
-    </Sidebar>
+    </NavContainer>
   );
 };
 

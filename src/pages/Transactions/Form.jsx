@@ -1,4 +1,7 @@
-import { useAddTransactionMutation, useUpdateTransactionMutation } from '../../services/transactionService';
+import {
+  useAddTransactionMutation,
+  useUpdateTransactionMutation,
+} from '../../services/transactionService';
 import { types, categories, transactionStatus } from '../../_mocks';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { formatCurrency } from '../../utils';
@@ -95,9 +98,19 @@ const Form = ({ data, open, action, close }) => {
         }}
         enableReinitialize
       >
-        {({ errors, isSubmitting, values, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
+        {({
+          errors,
+          isSubmitting,
+          values,
+          touched,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          setFieldValue,
+        }) => (
           <Box
             sx={{
+              bgcolor: 'neutral.main',
               width: 430,
               height: '100%',
               display: 'flex',
@@ -114,7 +127,12 @@ const Form = ({ data, open, action, close }) => {
               <Grid item xs={2}>
                 <FormControl fullWidth error={!!errors.type}>
                   <InputLabel>Tipo</InputLabel>
-                  <Select label="Tipo" onChange={handleChange} name="type" value={values.type}>
+                  <Select
+                    label="Tipo"
+                    onChange={handleChange}
+                    name="type"
+                    value={values.type}
+                  >
                     {types.map((type) => (
                       <MenuItem key={type.id} value={type.label}>
                         {type.description}
@@ -128,7 +146,11 @@ const Form = ({ data, open, action, close }) => {
               <Grid item xs={2}>
                 <FormControl fullWidth error={!!errors.category}>
                   <InputLabel>Categoria</InputLabel>
-                  <Select onChange={handleChange} name="category" value={values.category}>
+                  <Select
+                    onChange={handleChange}
+                    name="category"
+                    value={values.category}
+                  >
                     {categories.map((category) => (
                       <MenuItem key={category.id} value={category.label}>
                         {category.label}
@@ -165,7 +187,9 @@ const Form = ({ data, open, action, close }) => {
                   error={touched.value && !!errors.value}
                   helperText={errors.value}
                   InputProps={{
-                    startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                    startAdornment: (
+                      <InputAdornment position="start">R$</InputAdornment>
+                    ),
                   }}
                 />
               </Grid>
@@ -182,7 +206,10 @@ const Form = ({ data, open, action, close }) => {
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={touched.dueDate && !!errors.dueDate}>
+                <FormControl
+                  fullWidth
+                  error={touched.dueDate && !!errors.dueDate}
+                >
                   <DatePicker
                     label="Vencimento"
                     views={['year', 'month', 'day']}
@@ -198,7 +225,10 @@ const Form = ({ data, open, action, close }) => {
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={touched.payDate && !!errors.payDate}>
+                <FormControl
+                  fullWidth
+                  error={touched.payDate && !!errors.payDate}
+                >
                   <DatePicker
                     label="Pagamento"
                     views={['year', 'month', 'day']}
@@ -216,7 +246,11 @@ const Form = ({ data, open, action, close }) => {
               <Grid item xs={2}>
                 <FormControl fullWidth error={!!errors.status}>
                   <InputLabel>Status</InputLabel>
-                  <Select onChange={handleChange} name="status" value={values.status}>
+                  <Select
+                    onChange={handleChange}
+                    name="status"
+                    value={values.status}
+                  >
                     {transactionStatus.map((status) => (
                       <MenuItem key={status.id} value={status.label}>
                         {status.label}
@@ -240,7 +274,12 @@ const Form = ({ data, open, action, close }) => {
               <LoadingButton variant="outlined" color="inherit" onClick={close}>
                 Cancelar
               </LoadingButton>
-              <LoadingButton loading={isSubmitting} variant="contained" color="primary" onClick={handleSubmit}>
+              <LoadingButton
+                loading={isSubmitting}
+                variant="contained"
+                color="accent"
+                onClick={handleSubmit}
+              >
                 Salvar
               </LoadingButton>
             </Box>

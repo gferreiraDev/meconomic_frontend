@@ -25,24 +25,11 @@ export const useChart = (options) => {
   };
 
   const baseOptions = {
-    // Colors
-    // colors: [
-    //   theme.palette.primary.main,
-    //   theme.palette.warning.main,
-    //   theme.palette.info.main,
-    //   theme.palette.error.main,
-    //   theme.palette.success.main,
-    //   theme.palette.warning.dark,
-    //   theme.palette.success.darker,
-    //   theme.palette.info.dark,
-    //   theme.palette.info.darker,
-    // ],
-
     // Chart
     chart: {
       toolbar: { show: false },
       zoom: { enabled: false },
-      foreColor: theme.palette.common.white,
+      foreColor: theme.palette.text.primary,
       fontFamily: theme.typography.fontFamily,
     },
 
@@ -126,7 +113,7 @@ export const useChart = (options) => {
       fontWeight: 500,
       itemMargin: { horizontal: 12 },
       labels: {
-        colors: theme.palette.common.white,
+        colors: theme.palette.text.primary,
       },
     },
 

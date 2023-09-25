@@ -13,13 +13,7 @@ const Invoices = () => {
   }, [loading]);
 
   return (
-    <Box
-      sx={{
-        border: 'solid 2px #fff',
-        flex: 1,
-        p: 2,
-      }}
-    >
+    <>
       <PageHeader
         title="Faturas"
         subtitle="Calculo das compras no cartão"
@@ -32,7 +26,7 @@ const Invoices = () => {
       ) : (
         <NoContent text="Nenhum conteúdo a ser exibido" action={() => setLoading(true)} actionLabel="Recarregar" />
       )}
-    </Box>
+    </>
   );
 };
 

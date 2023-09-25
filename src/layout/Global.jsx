@@ -9,7 +9,7 @@ const Global = () => {
       sx={{
         width: '100vw',
         height: '100vh',
-        bgcolor: '#001429',
+        bgcolor: 'primary.main',
         py: 6,
       }}
     >

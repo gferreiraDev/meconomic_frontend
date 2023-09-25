@@ -13,13 +13,7 @@ const Wallet = () => {
   }, [loading]);
 
   return (
-    <Box
-      sx={{
-        border: 'solid 2px #fff',
-        flex: 1,
-        p: 2,
-      }}
-    >
+    <>
       <PageHeader
         title="Minha Carteira"
         subtitle="Saldo atual em carteira e/ou conta"
@@ -32,7 +26,7 @@ const Wallet = () => {
       ) : (
         <NoContent text="Nenhum conteúdo a ser exibido" action={() => setLoading(true)} actionLabel="Recarregar" />
       )}
-    </Box>
+    </>
   );
 };
 

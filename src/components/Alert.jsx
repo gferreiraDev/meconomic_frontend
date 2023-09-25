@@ -5,8 +5,13 @@ const Alert = ({ open, message, handleClose, error }) => {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={3000}
+      autoHideDuration={1500}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      sx={{
+        '& .MuiPaper-root': {
+          bgcolor: 'secondary.main',
+        },
+      }}
       onClose={handleClose}
     >
       <MuiAlert onClose={handleClose} severity={error ? 'error' : 'success'}>

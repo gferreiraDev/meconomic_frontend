@@ -1,7 +1,11 @@
 import { Box, Typography } from '@mui/material';
+import { themeMode } from '../redux/themeSlice';
 import { Hypnosis } from 'react-cssfx-loading';
+import { useSelector } from 'react-redux';
 
 const Loader = () => {
+  const mode = useSelector(themeMode);
+
   return (
     <Box
       sx={{
@@ -17,12 +21,13 @@ const Loader = () => {
       <Hypnosis
         width="80px"
         height="80px"
-        style={{
-          margin: 'auto',
-        }}
-        color="#4cceac"
+        color={mode === 'light' ? '#535ac8' : '#4CCEAC'}
+        sx={{ margin: 'auto' }}
       />
-      <Typography variant="body2" sx={{ fontStyle: 'italic', color: '#4cceac', mt: 2 }}>
+      <Typography
+        variant="body2"
+        sx={{ fontStyle: 'italic', color: 'accent.main', mt: 2 }}
+      >
         Carregando...
       </Typography>
     </Box>

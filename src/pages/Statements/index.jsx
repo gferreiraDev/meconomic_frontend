@@ -1,7 +1,9 @@
-import { useListQuery, useDeleteMutation } from '../../services/statementService';
 import { Loader, PageHeader, Alert } from '../../components';
 import { useState, useEffect } from 'react';
-import { Box } from '@mui/material';
+import {
+  useListQuery,
+  useDeleteMutation,
+} from '../../services/statementService';
 import Form from './Form';
 import List from './List';
 
@@ -9,7 +11,11 @@ const Statements = () => {
   const [drop] = useDeleteMutation();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [message, setMessage] = useState({ message: '', error: false, visible: false });
+  const [message, setMessage] = useState({
+    message: '',
+    error: false,
+    visible: false,
+  });
   const { data, isLoading, isError, isSuccess, refetch } = useListQuery();
 
   const handleSelect = (value) => {
@@ -25,7 +31,9 @@ const Statements = () => {
       .then(({ message }) => {
         setMessage({ message, error: false, visible: true });
       })
-      .catch((error) => setMessage({ message: error.data.message, error: true, visible: true }))
+      .catch((error) =>
+        setMessage({ message: error.data.message, error: true, visible: true })
+      )
       .finally(() => {
         refetch();
       });
@@ -41,12 +49,7 @@ const Statements = () => {
   }, [showForm, refetch]);
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        p: 2,
-      }}
-    >
+    <>
       <PageHeader
         title="Registros"
         subtitle="Receitas e Despesas recorrentes"
@@ -60,11 +63,36 @@ const Statements = () => {
         <List
           columns={[
             { id: 'type', label: 'Tipo', align: 'center', format: 'text' },
-            { id: 'category', label: 'Categoria', align: 'center', format: 'text' },
-            { id: 'description', label: 'Descrição', align: 'center', format: 'text' },
-            { id: 'expectedValue', label: 'Valor Médio', align: 'center', format: 'currency' },
-            { id: 'dueDay', label: 'Dia de Vencimento', align: 'center', format: 'text' },
-            { id: 'installments', label: 'Parcelas', align: 'center', format: 'text' },
+            {
+              id: 'category',
+              label: 'Categoria',
+              align: 'center',
+              format: 'text',
+            },
+            {
+              id: 'description',
+              label: 'Descrição',
+              align: 'center',
+              format: 'text',
+            },
+            {
+              id: 'expectedValue',
+              label: 'Valor Médio',
+              align: 'center',
+              format: 'currency',
+            },
+            {
+              id: 'dueDay',
+              label: 'Dia de Vencimento',
+              align: 'center',
+              format: 'text',
+            },
+            {
+              id: 'installments',
+              label: 'Parcelas',
+              align: 'center',
+              format: 'text',
+            },
           ]}
           rows={data.data}
           selected={selected}
@@ -74,15 +102,22 @@ const Statements = () => {
         />
       ) : null}
 
-      <Form open={showForm} action={handleCloseForm} data={selected} close={() => setShowForm(false)} />
+      <Form
+        open={showForm}
+        action={handleCloseForm}
+        data={selected}
+        close={() => setShowForm(false)}
+      />
 
       <Alert
         open={message.visible}
-        handleClose={() => setMessage((prev) => ({ ...prev, visible: !prev.visible }))}
+        handleClose={() =>
+          setMessage((prev) => ({ ...prev, visible: !prev.visible }))
+        }
         message={message.message}
         error={message.error}
       />
-    </Box>
+    </>
   );
 };
 

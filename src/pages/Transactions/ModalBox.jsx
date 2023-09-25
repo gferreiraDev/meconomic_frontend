@@ -85,11 +85,20 @@ const ModalBox = ({ open, handleClose, list }) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <Box component={Paper} sx={{ width: '65%', margin: '10% auto', p: 2 }}>
-        <Typography variant="h5" sx={{ textAlign: 'center', borderBottom: 'solid 1px #ccc', mb: 1 }}>
+        <Typography
+          variant="h5"
+          sx={{ textAlign: 'center', borderBottom: 'solid 1px #ccc', mb: 1 }}
+        >
           Resumo do mês
         </Typography>
 
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
           {/* DESCRITIVO DE RECEITAS */}
           <Box
             sx={{
@@ -111,33 +120,69 @@ const ModalBox = ({ open, handleClose, list }) => {
             >
               <Typography variant="body1">Fixas</Typography>
               <Typography variant="caption">
-                {data?.rf?.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {data?.rf?.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Variáveis</Typography>
               <Typography variant="caption">
-                {data?.rv?.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {data?.rv?.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Adicionais</Typography>
               <Typography variant="caption">
-                {data?.ra?.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {data?.ra?.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
 
             <Divider />
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Quitadas</Typography>
               <Typography variant="caption">
-                {data?.rq?.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {data?.rq?.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Pendente</Typography>
               <Typography variant="caption">
                 {data?.rp?.toLocaleString('pt-br', {
@@ -149,10 +194,19 @@ const ModalBox = ({ open, handleClose, list }) => {
 
             <Divider />
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Totais</Typography>
               <Typography variant="caption">
-                {(data?.rp + data?.rq).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {(data?.rp + data?.rq).toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
           </Box>
@@ -178,33 +232,69 @@ const ModalBox = ({ open, handleClose, list }) => {
             >
               <Typography variant="body1">Fixas</Typography>
               <Typography variant="caption">
-                {data?.df?.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {data?.df?.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Variáveis</Typography>
               <Typography variant="caption">
-                {data?.dv?.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {data?.dv?.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Adicionais</Typography>
               <Typography variant="caption">
-                {data?.da?.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {data?.da?.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
 
             <Divider />
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Quitadas</Typography>
               <Typography variant="caption">
-                {data?.dq?.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {data?.dq?.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Pendente</Typography>
               <Typography variant="caption">
                 {data?.dp?.toLocaleString('pt-br', {
@@ -216,10 +306,19 @@ const ModalBox = ({ open, handleClose, list }) => {
 
             <Divider />
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Totais</Typography>
               <Typography variant="caption">
-                {(data?.dp + data?.dq).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {(data?.dp + data?.dq).toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
           </Box>
@@ -245,14 +344,26 @@ const ModalBox = ({ open, handleClose, list }) => {
             >
               <Typography variant="body1">Saldo Atual</Typography>
               <Typography variant="caption">
-                {data.saldo.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {data.saldo.toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography variant="body1">Saldo Previsto</Typography>
               <Typography variant="caption">
-                {(data?.saldo + data?.rp - data?.dp).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                {(data?.saldo + data?.rp - data?.dp).toLocaleString('pt-br', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
               </Typography>
             </Box>
           </Box>

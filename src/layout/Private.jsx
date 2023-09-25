@@ -1,9 +1,8 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { Container } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { Box, Container } from '@mui/material';
 import { getUser } from '../redux/authSlice';
-import { Navbar } from '../components';
 import SideNav from '../components/SideNav';
+import { useSelector } from 'react-redux';
 
 const Private = () => {
   const user = useSelector(getUser);
@@ -15,14 +14,17 @@ const Private = () => {
       sx={{
         width: '100vw',
         height: '100vh',
-        bgcolor: '#001429',
+        bgcolor: 'primary.main',
         display: 'flex',
       }}
     >
-      {/* <Navbar /> */}
-      <SideNav />
+      <Box sx={{ height: '100vh', display: { xs: 'none', sm: 'flex' } }}>
+        <SideNav />
+      </Box>
 
-      <Outlet />
+      <Box sx={{ flex: 1, p: 2, overflow: 'hidden' }}>
+        <Outlet />
+      </Box>
     </Container>
   ) : (
     <Navigate to="/signin" replace />

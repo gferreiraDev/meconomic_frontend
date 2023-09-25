@@ -5,7 +5,7 @@ const PageHeader = ({ title, subtitle, label, action, children }) => {
   return (
     <Box
       sx={{
-        bgcolor: '#ffffff19',
+        bgcolor: 'paper',
         p: 2,
         borderRadius: 2,
         display: 'flex',
@@ -15,12 +15,13 @@ const PageHeader = ({ title, subtitle, label, action, children }) => {
       }}
     >
       <Box>
-        <Typography variant="h6">{title}</Typography>
+        <Typography variant="h6" color="accent.main">
+          {title}
+        </Typography>
         <Typography
           variant="body1"
           sx={{
             ml: 2,
-            color: '#4cceac',
             fontStyle: 'italic',
           }}
         >
@@ -31,7 +32,7 @@ const PageHeader = ({ title, subtitle, label, action, children }) => {
       {children}
 
       {action && (
-        <Button variant="outlined" color="secondary" onClick={action}>
+        <Button variant="outlined" color="accent" onClick={action}>
           {label}
         </Button>
       )}

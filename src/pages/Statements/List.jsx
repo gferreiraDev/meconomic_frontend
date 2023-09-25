@@ -1,4 +1,8 @@
-import { DeleteForeverOutlined, EditOutlined, MoreVertOutlined } from '@mui/icons-material';
+import {
+  DeleteForeverOutlined,
+  EditOutlined,
+  MoreVertOutlined,
+} from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import {
@@ -27,7 +31,9 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
   };
 
   const getComparator = (order, orderBy) => {
-    return order === 'desc' ? (a, b) => comparator(a, b, orderBy) : (a, b) => -comparator(a, b, orderBy);
+    return order === 'desc'
+      ? (a, b) => comparator(a, b, orderBy)
+      : (a, b) => -comparator(a, b, orderBy);
   };
 
   const applySorter = (list, comparator) => {
@@ -66,12 +72,19 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
   const sortedRows = applySorter(rows, getComparator(order, orderBy));
 
   const formatData = (data, format) => {
-    if (format === 'currency') return data.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    if (format === 'currency')
+      return data.toLocaleString('pt-br', {
+        style: 'currency',
+        currency: 'BRL',
+      });
     return data;
   };
 
   return (
-    <TableContainer component={Paper} sx={{ height: '80vh', overflowY: 'auto', mt: 2 }}>
+    <TableContainer
+      component={Paper}
+      sx={{ height: '80vh', overflowY: 'auto', mt: 2, bgcolor: 'paper' }}
+    >
       <Table stickyHeader size="small">
         <TableHead>
           <TableRow>
@@ -81,7 +94,7 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
                 align={col.align}
                 sortDirection={orderBy === col.id ? order : false}
                 sx={{
-                  bgcolor: '#c3c6fd',
+                  bgcolor: 'accent.main',
                 }}
               >
                 <TableSortLabel
@@ -105,7 +118,9 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
                         clip: 'rect(0 0 0 0)',
                       }}
                     >
-                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                      {order === 'desc'
+                        ? 'sorted descending'
+                        : 'sorted ascending'}
                     </Box>
                   ) : null}
                 </TableSortLabel>
@@ -114,7 +129,7 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
 
             <TableCell
               sx={{
-                bgcolor: '#c3c6fd',
+                bgcolor: 'accent.main',
               }}
               align="center"
             ></TableCell>
@@ -163,6 +178,7 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
             sx: {
               p: 1,
               width: 140,
+              bgcolor: 'secondary.main',
               '& .MuiMenuItem-root': {
                 px: 1,
                 typography: 'body2',

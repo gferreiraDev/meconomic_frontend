@@ -1,16 +1,21 @@
-// import { useNavigate } from 'react-router-dom';
-import { useDeleteCardMutation, useListCardsQuery } from '../../services/cardService';
+import {
+  useDeleteCardMutation,
+  useListCardsQuery,
+} from '../../services/cardService';
 import { Alert, Loader, PageHeader } from '../../components';
 import { useEffect, useState } from 'react';
 import Form from './Form';
-import { Box } from '@mui/material';
 import List from './List';
 
 const Cards = () => {
   const [drop] = useDeleteCardMutation();
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [message, setMessage] = useState({ message: '', error: false, visible: false });
+  const [message, setMessage] = useState({
+    message: '',
+    error: false,
+    visible: false,
+  });
   const { data, isLoading, isError, isSuccess, refetch } = useListCardsQuery();
 
   const handleSelect = (value) => {
@@ -26,7 +31,9 @@ const Cards = () => {
       .then(({ message }) => {
         setMessage({ message, error: false, visible: true });
       })
-      .catch((error) => setMessage({ message: error.data.message, error: true, visible: true }))
+      .catch((error) =>
+        setMessage({ message: error.data.message, error: true, visible: true })
+      )
       .finally(() => {
         refetch();
       });
@@ -42,12 +49,7 @@ const Cards = () => {
   }, [showForm, refetch]);
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        p: 2,
-      }}
-    >
+    <>
       <PageHeader
         title="Meus Cartões"
         subtitle="Lista de cartões de crédito"
@@ -61,11 +63,31 @@ const Cards = () => {
         <List
           columns={[
             { id: 'name', label: 'Nome', align: 'left', format: 'text' },
-            { id: 'limit', label: 'Limite Total', align: 'center', format: 'currency' },
-            { id: 'currentLimit', label: 'Limite Disponível', align: 'center', format: 'currency' },
-            { id: 'annuity', label: 'Anuidade', align: 'center', format: 'currency' },
+            {
+              id: 'limit',
+              label: 'Limite Total',
+              align: 'center',
+              format: 'currency',
+            },
+            {
+              id: 'currentLimit',
+              label: 'Limite Disponível',
+              align: 'center',
+              format: 'currency',
+            },
+            {
+              id: 'annuity',
+              label: 'Anuidade',
+              align: 'center',
+              format: 'currency',
+            },
             { id: 'fees', label: 'Taxas', align: 'center', format: 'currency' },
-            { id: 'expiryDate', label: 'Validade', align: 'center', format: 'text' },
+            {
+              id: 'expiryDate',
+              label: 'Validade',
+              align: 'center',
+              format: 'text',
+            },
             { id: 'status', label: 'Status', align: 'center', format: 'text' },
           ]}
           rows={data.data}
@@ -76,14 +98,21 @@ const Cards = () => {
         />
       ) : null}
 
-      <Form open={showForm} action={handleCloseForm} data={selected} close={() => setShowForm(false)} />
+      <Form
+        open={showForm}
+        action={handleCloseForm}
+        data={selected}
+        close={() => setShowForm(false)}
+      />
       <Alert
         open={message.visible}
-        handleClose={() => setMessage((prev) => ({ ...prev, visible: !prev.visible }))}
+        handleClose={() =>
+          setMessage((prev) => ({ ...prev, visible: !prev.visible }))
+        }
         message={message.message}
         error={message.error}
       />
-    </Box>
+    </>
   );
 };
 

@@ -1,4 +1,8 @@
-import { DeleteForeverOutlined, EditOutlined, MoreVertOutlined } from '@mui/icons-material';
+import {
+  DeleteForeverOutlined,
+  EditOutlined,
+  MoreVertOutlined,
+} from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import {
@@ -25,7 +29,7 @@ const CardImage = ({ name, lastNumbers, brand }) => {
         height: 80,
         p: 1,
         borderRadius: 2,
-        bgcolor: '#00000033',
+        bgcolor: 'paper',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -62,7 +66,9 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
   };
 
   const getComparator = (order, orderBy) => {
-    return order === 'desc' ? (a, b) => comparator(a, b, orderBy) : (a, b) => -comparator(a, b, orderBy);
+    return order === 'desc'
+      ? (a, b) => comparator(a, b, orderBy)
+      : (a, b) => -comparator(a, b, orderBy);
   };
 
   const applySorter = (list, comparator) => {
@@ -101,18 +107,25 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
   const sortedRows = applySorter(rows, getComparator(order, orderBy));
 
   const formatData = (data, format) => {
-    if (format === 'currency') return data.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+    if (format === 'currency')
+      return data.toLocaleString('pt-br', {
+        style: 'currency',
+        currency: 'BRL',
+      });
     return data;
   };
 
   return (
-    <TableContainer component={Paper} sx={{ height: '80vh', overflowY: 'auto', mt: 2 }}>
+    <TableContainer
+      component={Paper}
+      sx={{ height: '80vh', overflowY: 'auto', mt: 2, bgcolor: 'paper' }}
+    >
       <Table stickyHeader size="small">
         <TableHead>
           <TableRow>
             <TableCell
               sx={{
-                bgcolor: '#c3c6fd',
+                bgcolor: 'accent.main',
               }}
             ></TableCell>
             {columns.map((col) => (
@@ -121,7 +134,7 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
                 align={col.align}
                 sortDirection={orderBy === col.id ? order : false}
                 sx={{
-                  bgcolor: '#c3c6fd',
+                  bgcolor: 'accent.main',
                 }}
               >
                 <TableSortLabel
@@ -145,7 +158,9 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
                         clip: 'rect(0 0 0 0)',
                       }}
                     >
-                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                      {order === 'desc'
+                        ? 'sorted descending'
+                        : 'sorted ascending'}
                     </Box>
                   ) : null}
                 </TableSortLabel>
@@ -154,7 +169,7 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
 
             <TableCell
               sx={{
-                bgcolor: '#c3c6fd',
+                bgcolor: 'accent.main',
               }}
               align="center"
             ></TableCell>
@@ -166,7 +181,11 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
             {sortedRows.map((row) => (
               <TableRow key={row.id} hover>
                 <TableCell>
-                  <CardImage name={row.name} brand={row.brand} lastNumbers={row.lastNumbers} />
+                  <CardImage
+                    name={row.name}
+                    brand={row.brand}
+                    lastNumbers={row.lastNumbers}
+                  />
                 </TableCell>
                 {columns.map((col, idx) => (
                   <TableCell key={idx} align={col.align}>
@@ -174,14 +193,22 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
                       <>
                         {formatData(row[col.id], col.format)}
                         <br />
-                        <Typography variant="caption">(12 x {formatData(row[col.id] / 12, col.format)})</Typography>
+                        <Typography variant="caption" color="text.disabled">
+                          (12 x {formatData(row[col.id] / 12, col.format)})
+                        </Typography>
                       </>
                     ) : col.id === 'status' ? (
                       <Chip
                         variant="outlined"
                         size="small"
                         label={row.status}
-                        color={row.status === 'Ativo' ? 'success' : row.status === 'Bloqueado' ? 'error' : 'inherit'}
+                        color={
+                          row.status === 'Ativo'
+                            ? 'success'
+                            : row.status === 'Bloqueado'
+                            ? 'error'
+                            : 'inherit'
+                        }
                       />
                     ) : (
                       formatData(row[col.id], col.format)
@@ -221,6 +248,7 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
             sx: {
               p: 1,
               width: 140,
+              bgcolor: 'secondary.main',
               '& .MuiMenuItem-root': {
                 px: 1,
                 typography: 'body2',

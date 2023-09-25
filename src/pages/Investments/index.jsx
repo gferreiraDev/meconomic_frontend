@@ -13,13 +13,7 @@ const Investments = () => {
   }, [loading]);
 
   return (
-    <Box
-      sx={{
-        border: 'solid 2px #fff',
-        flex: 1,
-        p: 2,
-      }}
-    >
+    <>
       <PageHeader
         title="Investimentos"
         subtitle="Lista dos investimentos atuais"
@@ -32,7 +26,7 @@ const Investments = () => {
       ) : (
         <NoContent text="Nenhum conteúdo a ser exibido" action={() => setLoading(true)} actionLabel="Recarregar" />
       )}
-    </Box>
+    </>
   );
 };
 

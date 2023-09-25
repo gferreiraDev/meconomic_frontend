@@ -1,13 +1,20 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Drawer, Grid, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { Formik } from 'formik';
-import * as yup from 'yup';
 import { useUpdatePasswordMutation } from '../../services/authService';
 import { updateCredentials } from '../../redux/authSlice';
 import { useDispatch } from 'react-redux';
+import { LoadingButton } from '@mui/lab';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import {
+  Drawer,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 const Form = ({ visible, setVisible }) => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -41,7 +48,6 @@ const Form = ({ visible, setVisible }) => {
           update(values)
             .unwrap()
             .then((response) => {
-              // console.log(response.message);
               dispatch(updateCredentials(response.data));
               alert(response.message);
             })
@@ -61,13 +67,34 @@ const Form = ({ visible, setVisible }) => {
         }}
         enableReinitialize
       >
-        {({ errors, values, touched, handleChange, handleBlur, isSubmitting, handleSubmit }) => (
-          <Grid container columns={2} rowGap={3} columnSpacing={2} sx={{ p: 2, width: 400 }}>
-            <Typography variant="h5" sx={{ m: 2, textAlign: 'center', gridColumn: 'span 2' }}>
-              Alteração de senha
-            </Typography>
+        {({
+          errors,
+          values,
+          touched,
+          handleChange,
+          handleBlur,
+          isSubmitting,
+          handleSubmit,
+        }) => (
+          <Grid
+            container
+            rowGap={3}
+            columnSpacing={2}
+            sx={{
+              p: 2,
+              width: 400,
+              bgcolor: 'neutral.main',
+              flex: 1,
+              justifyContent: 'space-between',
+            }}
+          >
+            <Grid item xs={12}>
+              <Typography variant="h5" align="center">
+                Alteração de senha
+              </Typography>
+            </Grid>
 
-            <Grid item xs={2}>
+            <Grid item xs={12}>
               <TextField
                 label="Senha atual"
                 type={showCurrentPassword ? 'text' : 'password'}
@@ -82,9 +109,15 @@ const Form = ({ visible, setVisible }) => {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                        onClick={() =>
+                          setShowCurrentPassword(!showCurrentPassword)
+                        }
                       >
-                        {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
+                        {showCurrentPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -93,7 +126,7 @@ const Form = ({ visible, setVisible }) => {
               />
             </Grid>
 
-            <Grid item xs={2}>
+            <Grid item xs={12}>
               <TextField
                 label="Nova Senha"
                 type={showNewPassword ? 'text' : 'password'}
@@ -119,7 +152,7 @@ const Form = ({ visible, setVisible }) => {
               />
             </Grid>
 
-            <Grid item xs={2}>
+            <Grid item xs={12}>
               <TextField
                 label="Confirme a nova senha"
                 type={showNewPassword ? 'text' : 'password'}
@@ -145,7 +178,7 @@ const Form = ({ visible, setVisible }) => {
               />
             </Grid>
 
-            <Grid item xs={1}>
+            <Grid item xs={6}>
               <LoadingButton
                 fullWidth
                 size="small"
@@ -157,12 +190,12 @@ const Form = ({ visible, setVisible }) => {
               </LoadingButton>
             </Grid>
 
-            <Grid item xs={1}>
+            <Grid item xs={6}>
               <LoadingButton
                 fullWidth
                 size="small"
                 variant="contained"
-                color="primary"
+                color="accent"
                 loading={isSubmitting}
                 onClick={handleSubmit}
               >

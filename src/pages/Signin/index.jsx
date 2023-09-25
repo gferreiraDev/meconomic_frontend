@@ -39,56 +39,78 @@ const Signin = () => {
   };
 
   const validations = yup.object({
-    email: yup.string().email('Formato inválido').required('E-mail é obrigatório'),
+    email: yup
+      .string()
+      .email('Formato inválido')
+      .required('E-mail é obrigatório'),
     password: yup.string().required('Senha é obrigatório'),
   });
 
   return (
-    <Grid
-      component={Paper}
-      elevation={10}
-      sx={{
-        p: '20px',
-        height: '80vh',
-        width: 400,
-        m: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-      }}
-      align="center"
-    >
-      <Grid container columns={3} alignItems="center" columnGap={2}>
-        <Avatar sx={{ gridColumn: 'span 1', bgcolor: '#1976d2' }}>
-          <LockOutlined />
-        </Avatar>
-        <Typography sx={{ gridColumn: 'span 2' }} variant="h5">
-          SignIn
-        </Typography>
-      </Grid>
+    <Formik
+      validationSchema={validations}
+      initialValues={initialValues}
+      onSubmit={(values, { setSubmitting, resetForm }) => {
+        signin(values)
+          .unwrap()
+          .then(({ message, data }) => {
+            setSubmitting(false);
+            setMessage({ message, error: false, visible: true });
 
-      <Formik
-        validationSchema={validations}
-        initialValues={initialValues}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
-          signin(values)
-            .unwrap()
-            .then(({ message, data }) => {
-              setSubmitting(false);
-              setMessage({ message, error: false, visible: true });
-
-              dispatch(setCredentials(data));
-              resetForm();
-              navigate('/dashboard', { replace: true });
-            })
-            .catch((error) => {
-              setSubmitting(false);
-              setMessage({ message: error.data.message, error: true, visible: true });
+            dispatch(setCredentials(data));
+            resetForm();
+            navigate('/dashboard', { replace: true });
+          })
+          .catch((error) => {
+            setSubmitting(false);
+            setMessage({
+              message: error.data.message,
+              error: true,
+              visible: true,
             });
-        }}
-      >
-        {({ values, errors, touched, handleChange, isSubmitting, handleSubmit, setFieldValue }) => (
-          <Grid container rowGap={2} justifyContent="center">
+          });
+      }}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        isSubmitting,
+        handleSubmit,
+        setFieldValue,
+      }) => (
+        <Grid
+          container
+          rowGap={2}
+          sx={{
+            p: 2,
+            height: '85vh',
+            width: 450,
+            m: '5vh auto',
+            bgcolor: 'paper',
+            borderRadius: 2,
+          }}
+          align="center"
+        >
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ bgcolor: 'accent.main', mr: 2 }}>
+              <LockOutlined />
+            </Avatar>
+            <Typography sx={{ gridColumn: 'span 2' }} variant="h5">
+              Entre na sua conta
+            </Typography>
+          </Grid>
+
+          <Grid xs={12}>
             <TextField
               label="E-mail"
               placeholder="Digite seu e-mail"
@@ -99,7 +121,9 @@ const Signin = () => {
               error={touched.email && !!errors.email}
               helperText={errors.email}
             />
+          </Grid>
 
+          <Grid item xs={12}>
             <TextField
               label="Senha"
               type={showPassword ? 'text' : 'password'}
@@ -113,30 +137,47 @@ const Signin = () => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)}>
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
+          </Grid>
 
-            {/* <FormControlLabel
-              control={
-                <Checkbox
-                  name="remember"
-                  color="primary"
-                  checked={values.remember}
-                  onChange={() => setFieldValue('remember', !values.remember)}
-                />
-              }
-              label="Lembrar usuário"
-            /> */}
+          {/* 
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="remember"
+                    color="primary"
+                    checked={values.remember}
+                    onChange={() => setFieldValue('remember', !values.remember)}
+                  />
+                }
+                label="Lembrar usuário"
+              /> 
+            </Grid>
+          */}
 
-            <LoadingButton fullWidth variant="contained" color="primary" loading={isSubmitting} onClick={handleSubmit}>
+          <Grid item xs={12}>
+            <LoadingButton
+              fullWidth
+              variant="contained"
+              color="accent"
+              loading={isSubmitting}
+              onClick={handleSubmit}
+            >
               Entrar
             </LoadingButton>
+          </Grid>
 
+          <Grid item xs={12}>
             <Typography variant="body2" align="center">
               <Link
                 href="/forgot-password"
@@ -144,7 +185,7 @@ const Signin = () => {
                   textDecoration: 'none',
                   color: 'inherit',
                   '&:hover': {
-                    color: '#1976d2',
+                    color: 'accent.main',
                   },
                 }}
               >
@@ -152,26 +193,30 @@ const Signin = () => {
               </Link>
             </Typography>
           </Grid>
-        )}
-      </Formik>
 
-      <Grid>
-        <Typography>
-          Não possui conta?
-          <Link href="signup" sx={{ textDecoration: 'none' }}>
-            {' '}
-            Cadastre-se.
-          </Link>
-        </Typography>
-      </Grid>
+          <Grid item xs={12}>
+            <Typography>
+              Não possui conta?&nbsp;
+              <Link
+                href="signup"
+                sx={{ textDecoration: 'none', color: 'accent.main' }}
+              >
+                &nbsp;Cadastre-se.
+              </Link>
+            </Typography>
+          </Grid>
 
-      <Alert
-        open={message.visible}
-        handleClose={() => setMessage((prev) => ({ ...prev, visible: !prev.visible }))}
-        message={message.message}
-        error={message.error}
-      />
-    </Grid>
+          <Alert
+            open={message.visible}
+            handleClose={() =>
+              setMessage((prev) => ({ ...prev, visible: !prev.visible }))
+            }
+            message={message.message}
+            error={message.error}
+          />
+        </Grid>
+      )}
+    </Formik>
   );
 };
 
