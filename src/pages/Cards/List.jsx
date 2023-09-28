@@ -26,7 +26,7 @@ const CardImage = ({ name, lastNumbers, brand }) => {
   return (
     <Box
       sx={{
-        height: 80,
+        height: 90,
         p: 1,
         borderRadius: 2,
         bgcolor: 'paper',

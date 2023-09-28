@@ -78,7 +78,13 @@ const Transactions = () => {
       {isLoading ? (
         <Loader />
       ) : isSuccess && data ? (
-        <List rows={data} edit={handleSelect} remove={handleRemove}>
+        <List
+          rows={data}
+          selected={selected}
+          setSelected={setSelected}
+          edit={handleSelect}
+          remove={handleRemove}
+        >
           <Typography
             variant="h6"
             sx={{ display: { xs: 'none', md: 'block' } }}

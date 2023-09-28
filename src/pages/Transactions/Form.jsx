@@ -30,15 +30,15 @@ const Form = ({ data, open, action, close }) => {
   const initialValues = data
     ? { ...data }
     : {
-        type: 'DA',
-        category: 'Transporte',
-        description: 'Combustível',
-        value: 100,
+        type: '',
+        category: '',
+        description: '',
+        value: '',
         dueDate: '',
         payDate: '',
         installments: 1,
         installment: 1,
-        status: 'Quitado',
+        status: '',
       };
 
   const validations = yup.object({

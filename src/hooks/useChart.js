@@ -10,7 +10,7 @@ export const useChart = (options) => {
   const LABEL_TOTAL = {
     show: true,
     label: 'Total',
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.secondary.main,
     fontSize: theme.typography.subtitle2.fontSize,
     fontWeight: theme.typography.subtitle2.fontWeight,
     lineHeight: theme.typography.subtitle2.lineHeight,
@@ -18,7 +18,7 @@ export const useChart = (options) => {
 
   const LABEL_VALUE = {
     offsetY: 8,
-    color: theme.palette.text.primary,
+    color: theme.palette.text.primary.main,
     fontSize: theme.typography.h3.fontSize,
     fontWeight: theme.typography.h3.fontWeight,
     lineHeight: theme.typography.h3.lineHeight,

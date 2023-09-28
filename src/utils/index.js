@@ -18,3 +18,9 @@ export const stringToDate = (dateString) => {
 
   return new Date(parserYear, parserMonth, 1);
 };
+
+export const dayToDate = (day) => {
+  const refDate = new Date();
+
+  return new Date(refDate.getFullYear(), refDate.getMonth(), day);
+};

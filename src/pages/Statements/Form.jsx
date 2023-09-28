@@ -4,7 +4,7 @@ import {
 } from '../../services/statementService';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { types, categories } from '../../_mocks';
-import { formatCurrency } from '../../utils';
+import { formatCurrency, dayToDate } from '../../utils';
 import { LoadingButton } from '@mui/lab';
 import { getDate } from 'date-fns';
 import PropTypes from 'prop-types';
@@ -40,7 +40,7 @@ const Form = ({ data, open, action, close }) => {
         category: '',
         description: '',
         expectedValue: '',
-        dueDay: '',
+        dueDay: null,
         months: [
           { month: '1', label: 'Jan', checked: false },
           { month: '2', label: 'Fev', checked: false },
@@ -251,7 +251,7 @@ const Form = ({ data, open, action, close }) => {
                     label="Dia de Vencimento"
                     views={['day']}
                     format="dd"
-                    value={values.dueDay ? getDate(values.dueDay) : null}
+                    value={values.dueDay ? dayToDate(values.dueDay) : null}
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('dueDay', getDate(date))}
                     name="dueDay"

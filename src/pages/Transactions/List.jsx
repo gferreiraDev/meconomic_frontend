@@ -8,8 +8,7 @@ import {
 } from '@mui/icons-material';
 import { useState } from 'react';
 
-const List = ({ rows, edit, remove, children }) => {
-  const [selected, setSelected] = useState(null);
+const List = ({ rows, selected, setSelected, edit, remove, children }) => {
   const [open, setOpen] = useState(false);
 
   const handleOpenMenu = (event, item) => {
@@ -20,13 +19,13 @@ const List = ({ rows, edit, remove, children }) => {
   const handleRemove = () => {
     console.log('Editing data:', selected);
     setOpen(null);
-    remove();
+    remove(selected);
   };
 
   const handleEdit = () => {
     console.log('Editing data:', selected);
     setOpen(null);
-    edit();
+    edit(selected);
   };
 
   const columns = [
@@ -177,6 +176,8 @@ const List = ({ rows, edit, remove, children }) => {
 
 List.propTypes = {
   rows: PropTypes.object,
+  selected: PropTypes.any,
+  setSelected: PropTypes.func,
   edit: PropTypes.func,
   remove: PropTypes.func,
   children: PropTypes.node,

@@ -5,7 +5,7 @@ import {
 import { brands, chargeRules, cardStatus } from '../../_mocks';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { getDate, format } from 'date-fns';
-import { formatCurrency } from '../../utils';
+import { formatCurrency, dayToDate } from '../../utils';
 import { stringToDate } from '../../utils';
 import { LoadingButton } from '@mui/lab';
 import PropTypes from 'prop-types';
@@ -32,17 +32,17 @@ const Form = ({ data, open, action, close }) => {
   const initialValues = data
     ? { ...data }
     : {
-        name: 'Cartão Teste',
-        brand: 'Amex',
-        lastNumbers: '5678',
-        limit: 4356,
-        closingDay: 5,
-        dueDay: 16,
-        annuity: 689,
-        fees: 186,
-        chargeRule: 'always',
-        expiryDate: '02/25',
-        status: 'Ativo',
+        name: '',
+        brand: '',
+        lastNumbers: '',
+        limit: '',
+        closingDay: null,
+        dueDay: null,
+        annuity: '',
+        fees: '',
+        chargeRule: '',
+        expiryDate: '',
+        status: '',
       };
 
   const validations = yup.object({
@@ -226,7 +226,9 @@ const Form = ({ data, open, action, close }) => {
                     label="Dia de Fechamento"
                     views={['day']}
                     // format="DD"
-                    value={getDate(values.closingDay)}
+                    value={
+                      values.closingDay ? dayToDate(values.closingDay) : null
+                    }
                     onBlur={handleBlur}
                     onChange={(date) =>
                       setFieldValue('closingDay', getDate(date))
@@ -243,7 +245,7 @@ const Form = ({ data, open, action, close }) => {
                   <DatePicker
                     label="Dia de Vencimento"
                     views={['day']}
-                    value={getDate(values.dueDay)}
+                    value={values.dueDay ? dayToDate(values.dueDay) : null}
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('dueDay', getDate(date))}
                     name="dueDay"

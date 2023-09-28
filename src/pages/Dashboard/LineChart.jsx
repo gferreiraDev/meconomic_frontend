@@ -14,11 +14,18 @@ const LineChart = ({ title, subtitle, labels, data, ...props }) => {
       intersect: false,
       y: {
         formatter: (y) => {
-          if (typeof y !== 'undefined') {
-            return `${y.toFixed(0)} visits`;
-          }
-          return y;
+          return typeof y === 'number'
+            ? y.toLocaleString('pt-br', {
+                style: 'currency',
+                currency: 'BRL',
+              })
+            : y;
         },
+      },
+      theme: false,
+      style: {
+        foreColor: 'theme.paper',
+        color: '#f00',
       },
     },
   });
