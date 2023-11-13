@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { clearCredentials } from '../redux/authSlice';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:8000',
+  baseUrl: 'https://meconomic-api.onrender.com',
   // credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.token;
