@@ -90,7 +90,7 @@ const Cards = () => {
             },
             { id: 'status', label: 'Status', align: 'center', format: 'text' },
           ]}
-          rows={data.data}
+          rows={data?.data}
           selected={selected}
           setSelected={setSelected}
           onEdit={() => setShowForm(true)}

@@ -12,11 +12,14 @@ const NoContent = ({ text, action, actionLabel }) => {
         width: 450,
         height: 150,
         margin: '25vh auto',
-        bgcolor: '#ffffff08',
+        bgcolor: 'paper',
         borderRadius: 2,
       }}
     >
-      <Typography variant="body1" sx={{ fontStyle: 'italic' }}>
+      <Typography
+        variant="body1"
+        sx={{ fontStyle: 'italic', color: 'text.primary' }}
+      >
         {text}
       </Typography>
       {action && actionLabel && (

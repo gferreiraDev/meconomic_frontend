@@ -11,7 +11,6 @@ export const statementService = apiService.injectEndpoints({
     }),
     list: builder.query({
       query: () => '/statements',
-      // keepUnusedDataFor: 5,
     }),
     update: builder.mutation({
       query: ({ id, data }) => ({
@@ -29,4 +28,9 @@ export const statementService = apiService.injectEndpoints({
   }),
 });
 
-export const { useCreateMutation, useListQuery, useUpdateMutation, useDeleteMutation } = statementService;
+export const {
+  useCreateMutation,
+  useListQuery,
+  useUpdateMutation,
+  useDeleteMutation,
+} = statementService;

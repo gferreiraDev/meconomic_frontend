@@ -21,97 +21,93 @@ const Dashboard = () => {
     totalRA: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     totalIncomes: 0,
     totalExpenses: 0,
-    // labels: [
-    //   '01/01/2023',
-    //   '02/01/2023',
-    //   '03/01/2023',
-    //   '04/01/2023',
-    //   '05/01/2023',
-    //   '06/01/2023',
-    //   '07/01/2023',
-    //   '08/01/2023',
-    //   '09/01/2023',
-    //   '10/01/2023',
-    //   '11/01/2023',
-    //   '12/01/2023',
-    // ],
+    labels: [
+      '01/01/2023',
+      '02/01/2023',
+      '03/01/2023',
+      '04/01/2023',
+      '05/01/2023',
+      '06/01/2023',
+      '07/01/2023',
+      '08/01/2023',
+      '09/01/2023',
+      '10/01/2023',
+      '11/01/2023',
+      '12/01/2023',
+    ],
+    walletSum: 0,
+    investmentsSum: 0,
+    targetSum: 0,
+    currentPendingSum: 0,
   });
 
   const { data, isSuccess, isError, isLoading, refetch } = useGetDataQuery();
 
-  const labels = [
-    '01/01/2023',
-    '02/01/2023',
-    '03/01/2023',
-    '04/01/2023',
-    '05/01/2023',
-    '06/01/2023',
-    '07/01/2023',
-    '08/01/2023',
-    '09/01/2023',
-    '10/01/2023',
-    '11/01/2023',
-    '12/01/2023',
-  ];
-
   useEffect(() => {
-    // console.log(data.data);
-
-    setDashboardData((prev) => ({
-      ...prev,
-      ...data?.data,
-    }));
+    if (data?.data)
+      setDashboardData((prev) => ({
+        ...prev,
+        ...data.data,
+        labels: data.data?.labels.length < 12 ? prev.labels : data.data.labels,
+      }));
   }, [data]);
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || !data ? (
         <Loader />
-      ) : !isLoading && isSuccess ? (
+      ) : !isLoading && isSuccess && data ? (
         <Grid
           container
-          spacing={{ xs: 1, md: 3 }}
+          columnSpacing={{ xs: 1, md: 2 }}
+          rowSpacing={{ xs: 1 }}
           sx={{ overflow: 'auto', height: '97vh' }}
         >
-          <Grid item xs={6} sm={6} md={3}>
-            <DataWidget title="Carteira" value={648.89} />
+          <Grid item xs={6} md={3}>
+            <DataWidget
+              title="Saldo do Mês"
+              value={dashboardData.currentPendingSum}
+            />
           </Grid>
 
-          <Grid item xs={6} sm={6} md={3}>
-            <DataWidget title="Investimentos" value={13800.33} />
+          <Grid item xs={6} md={3}>
+            <DataWidget title="Carteira" value={dashboardData.walletSum} />
           </Grid>
 
-          <Grid item xs={6} sm={6} md={3}>
-            <DataWidget title="Metas" value={25000.0} />
+          <Grid item xs={6} md={3}>
+            <DataWidget
+              title="Investimentos"
+              value={dashboardData.investmentsSum}
+            />
           </Grid>
 
-          <Grid item xs={6} sm={6} md={3}>
-            <DataWidget title="Outros Valores" value={0} />
+          <Grid item xs={6} md={3}>
+            <DataWidget title="Metas" value={dashboardData.targetSum} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
             <LineChart
               title="Desempenho por mês"
-              subtitle="(+25%) de variação"
-              labels={labels}
+              subtitle="Receita x Despesa & saldo"
+              labels={dashboardData.labels}
               data={[
                 {
                   name: 'Despesa Total',
                   type: 'line',
                   fill: 'solid',
-                  data: dashboardData.expenses,
+                  data: data?.data?.expenses,
                 },
                 {
                   name: 'Receita Total',
                   type: 'line',
                   fill: 'solid',
-                  data: dashboardData.incomes,
+                  data: data?.data?.incomes,
                 },
                 {
                   name: 'Saldo',
                   type: 'column',
                   fill: 'solid',
-                  data: dashboardData.result,
+                  data: data?.data?.result,
                 },
               ]}
             />
@@ -124,42 +120,42 @@ const Dashboard = () => {
               data={[
                 {
                   label: 'Despesa Fixa',
-                  value: dashboardData.totalDF.reduce(
+                  value: data?.data?.totalDF.reduce(
                     (sum, value) => (sum = sum += value),
                     0
                   ),
                 },
                 {
                   label: 'Receita Fixa',
-                  value: dashboardData.totalRF.reduce(
+                  value: data?.data?.totalRF.reduce(
                     (sum, value) => (sum = sum += value),
                     0
                   ),
                 },
                 {
                   label: 'Despesa Variável',
-                  value: dashboardData.totalDV.reduce(
+                  value: data?.data?.totalDV.reduce(
                     (sum, value) => (sum = sum += value),
                     0
                   ),
                 },
                 {
                   label: 'Receita Variável',
-                  value: dashboardData.totalRV.reduce(
+                  value: data?.data?.totalRV.reduce(
                     (sum, value) => (sum = sum += value),
                     0
                   ),
                 },
                 {
                   label: 'Despesa Adicional',
-                  value: dashboardData.totalDA.reduce(
+                  value: data?.data?.totalDA.reduce(
                     (sum, value) => (sum = sum += value),
                     0
                   ),
                 },
                 {
                   label: 'Receita Adicional',
-                  value: dashboardData.totalRA.reduce(
+                  value: data?.data?.totalRA.reduce(
                     (sum, value) => (sum = sum += value),
                     0
                   ),

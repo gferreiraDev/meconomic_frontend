@@ -1,16 +1,16 @@
-import {
-  useCreateMutation,
-  useUpdateMutation,
-} from '../../services/statementService';
+import { schema } from '../../validationSchemas/statementsSchema';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { types, categories } from '../../_mocks';
 import { formatCurrency, dayToDate } from '../../utils';
+import { types, categories } from '../../_mocks';
 import { LoadingButton } from '@mui/lab';
 import { getDate } from 'date-fns';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Formik } from 'formik';
-import * as yup from 'yup';
+import {
+  useCreateMutation,
+  useUpdateMutation,
+} from '../../services/statementService';
 import {
   Box,
   Grid,
@@ -57,32 +57,6 @@ const Form = ({ data, open, action, close }) => {
         ],
       };
 
-  const validations = yup.object({
-    type: yup
-      .string()
-      .matches(/['DF', 'DV', 'DA', 'RF', 'RV', 'RA']/)
-      .required('Campo obrigatório'),
-    category: yup.string().required('Campo obrigatório'),
-    description: yup.string().required('Campo obrigatório'),
-    expectedValue: yup.string().required('Campo obrigatório'),
-    dueDay: yup
-      .number()
-      .min(1, 'Valor inválido')
-      .max(31, 'Valor inválido')
-      .required('Campo obrigatório'),
-    months: yup
-      .array()
-      .of(
-        yup.object().shape({
-          label: yup.string(),
-          checked: yup.boolean(),
-        })
-      )
-      .test('values', 'selecione pelo menos um mês', (months) =>
-        months.reduce((sum, month) => (sum += month.checked ? 1 : 0), 0)
-      ),
-  });
-
   const handleSelect = (values, item, cb) => {
     const months = [...values];
     const currentIndex = months.indexOf(item);
@@ -91,6 +65,12 @@ const Form = ({ data, open, action, close }) => {
       ...months[currentIndex],
       checked: !months[currentIndex].checked,
     };
+
+    const allSelected = months.reduce(
+      (sum, month) => (sum += month?.checked ? 1 : 0),
+      0
+    );
+    setSelectAll(allSelected === 12);
 
     cb('months', months);
   };
@@ -106,7 +86,7 @@ const Form = ({ data, open, action, close }) => {
     <Drawer open={open} anchor="right">
       <Formik
         initialValues={initialValues}
-        validationSchema={validations}
+        validationSchema={schema}
         onSubmit={(values, { resetForm, setSubmitting }) => {
           const dados = {
             ...values,
@@ -127,7 +107,6 @@ const Form = ({ data, open, action, close }) => {
                 action(message, false);
               })
               .catch((error) => {
-                console.log(error);
                 action(error.data.message, true);
               });
           } else {
@@ -139,7 +118,6 @@ const Form = ({ data, open, action, close }) => {
                 action(message, false);
               })
               .catch((error) => {
-                console.log(error);
                 action(error.data.message, true);
               });
           }
@@ -173,7 +151,7 @@ const Form = ({ data, open, action, close }) => {
 
             <Grid container columns={4} spacing={2} sx={{ p: 2 }}>
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.type}>
+                <FormControl fullWidth error={touched.type && !!errors.type}>
                   <InputLabel>Tipo</InputLabel>
                   <Select
                     label="Tipo"
@@ -187,12 +165,17 @@ const Form = ({ data, open, action, close }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText>{errors.type}</FormHelperText>
+                  {touched.type && !!errors.type && (
+                    <FormHelperText>{errors.type}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.category}>
+                <FormControl
+                  fullWidth
+                  error={touched.category && !!errors.category}
+                >
                   <InputLabel>Categoria</InputLabel>
                   <Select
                     onChange={handleChange}
@@ -205,7 +188,9 @@ const Form = ({ data, open, action, close }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText>{errors.category}</FormHelperText>
+                  {touched.category && !!errors.category && (
+                    <FormHelperText>{errors.category}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
 
@@ -218,8 +203,12 @@ const Form = ({ data, open, action, close }) => {
                   onChange={handleChange}
                   value={values.description}
                   name="description"
-                  error={!!errors.description}
-                  helperText={errors.description}
+                  error={touched.description && !!errors.description}
+                  helperText={
+                    touched.description && !!errors.description
+                      ? errors.description
+                      : undefined
+                  }
                 />
               </Grid>
 
@@ -233,7 +222,11 @@ const Form = ({ data, open, action, close }) => {
                   value={values.expectedValue}
                   name="expectedValue"
                   error={touched.expectedValue && !!errors.expectedValue}
-                  helperText={errors.expectedValue}
+                  helperText={
+                    touched.expectedValue && !!errors.expectedValue
+                      ? errors.expectedValue
+                      : undefined
+                  }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">R$</InputAdornment>
@@ -255,14 +248,18 @@ const Form = ({ data, open, action, close }) => {
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('dueDay', getDate(date))}
                     name="dueDay"
-                    error={touched.dueDay && !!errors.dueDay}
+                    slotProps={{
+                      textField: {
+                        helperText: errors.dueDay,
+                        error: touched.dueDay && !!errors.dueDay,
+                      },
+                    }}
                   />
-                  <FormHelperText>{errors.dueDay}</FormHelperText>
                 </FormControl>
               </Grid>
 
               <Grid item xs={4}>
-                <FormControl error={!!errors.months}>
+                <FormControl error={touched.months && !!errors.months}>
                   <FormLabel component="legend">Meses de recorrência</FormLabel>
                   <FormControlLabel
                     label="Selecionar todos"
@@ -272,6 +269,11 @@ const Form = ({ data, open, action, close }) => {
                         onChange={() =>
                           toggleSelectAll(values.months, setFieldValue)
                         }
+                        sx={{
+                          '&.Mui-checked': {
+                            color: 'accent.dark',
+                          },
+                        }}
                       />
                     }
                   />
@@ -280,7 +282,11 @@ const Form = ({ data, open, action, close }) => {
                     columns={4}
                     gap={2}
                     sx={{
-                      border: 'solid 1px #ccc',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: errors.months
+                        ? 'error.main'
+                        : 'neutral.main',
                       justifyContent: 'center',
                       p: 1,
                     }}
@@ -295,12 +301,19 @@ const Form = ({ data, open, action, close }) => {
                             onChange={() =>
                               handleSelect(values.months, month, setFieldValue)
                             }
+                            sx={{
+                              '&.Mui-checked': {
+                                color: 'accent.dark',
+                              },
+                            }}
                           />
                         }
                       />
                     ))}
                   </Grid>
-                  <FormHelperText>{errors.months}</FormHelperText>
+                  {touched.months && !!errors.months && (
+                    <FormHelperText>{errors.months}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
             </Grid>

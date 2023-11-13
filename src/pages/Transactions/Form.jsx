@@ -1,14 +1,15 @@
-import {
-  useAddTransactionMutation,
-  useUpdateTransactionMutation,
-} from '../../services/transactionService';
 import { types, categories, transactionStatus } from '../../_mocks';
+import { schema } from '../../validationSchemas/transactionsSchema';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { formatCurrency } from '../../utils';
 import { LoadingButton } from '@mui/lab';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
-import * as yup from 'yup';
+import {
+  useAddTransactionMutation,
+  useUpdateTransactionMutation,
+} from '../../services/transactionService';
+import { useListReservesQuery } from '../../services/reserveService';
 import {
   Box,
   Grid,
@@ -27,8 +28,15 @@ const Form = ({ data, open, action, close }) => {
   const [create] = useAddTransactionMutation();
   const [update] = useUpdateTransactionMutation();
 
+  const {
+    data: reserves,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useListReservesQuery();
+
   const initialValues = data
-    ? { ...data }
+    ? { ...data, reserveId: '' }
     : {
         type: '',
         category: '',
@@ -39,38 +47,22 @@ const Form = ({ data, open, action, close }) => {
         installments: 1,
         installment: 1,
         status: '',
+        reserveId: '',
       };
-
-  const validations = yup.object({
-    type: yup
-      .string()
-      .matches(/['DF', 'DV', 'DA', 'RF', 'RV', 'RA']/)
-      .required('Campo obrigatório'),
-    category: yup.string().required('Campo obrigatório'),
-    description: yup.string().required('Campo obrigatório'),
-    value: yup.string().required('Campo obrigatório'),
-    dueDate: yup.date().required('Campo obrigatório'),
-    payDate: yup.date().required('Campo obrigatório'),
-    installment: yup.number().min(1).required('Campo obrigatório'),
-    installments: yup.number().min(1).required('Campo obrigatório'),
-    status: yup.string().required('Campo obrigatório'),
-  });
 
   return (
     <Drawer open={open} anchor="right">
       <Formik
         initialValues={initialValues}
-        validationSchema={validations}
+        validationSchema={schema}
         onSubmit={(values, { resetForm, setSubmitting }) => {
-          const dados = {
+          const formattedData = {
             ...values,
             value: formatCurrency(values.value),
           };
 
-          console.log(dados);
-
           if (values.id) {
-            update({ id: values.id, data: dados })
+            update({ id: values.id, data: formattedData })
               .unwrap()
               .then(({ message, data }) => {
                 setSubmitting(false);
@@ -79,11 +71,10 @@ const Form = ({ data, open, action, close }) => {
                 action(message, false);
               })
               .catch((error) => {
-                console.log(error);
                 action(error.data.message, true);
               });
           } else {
-            create(dados)
+            create(formattedData)
               .unwrap()
               .then(({ message, data }) => {
                 setSubmitting(false);
@@ -91,7 +82,6 @@ const Form = ({ data, open, action, close }) => {
                 action(message, false);
               })
               .catch((error) => {
-                console.log(error);
                 action(error.data.message, true);
               });
           }
@@ -121,11 +111,13 @@ const Form = ({ data, open, action, close }) => {
               overflowX: 'hidden',
             }}
           >
-            <Typography variant="h5">Nova Transação</Typography>
+            <Typography variant="h5">
+              {values.id ? 'Editar' : 'Novo'} Lançamento
+            </Typography>
 
             <Grid container columns={4} spacing={2} sx={{ p: 2 }}>
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.type}>
+                <FormControl fullWidth error={touched.type && !!errors.type}>
                   <InputLabel>Tipo</InputLabel>
                   <Select
                     label="Tipo"
@@ -139,12 +131,17 @@ const Form = ({ data, open, action, close }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText>{errors.type}</FormHelperText>
+                  {touched.type && errors.type && (
+                    <FormHelperText>{errors.type}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.category}>
+                <FormControl
+                  fullWidth
+                  error={touched.category && !!errors.category}
+                >
                   <InputLabel>Categoria</InputLabel>
                   <Select
                     onChange={handleChange}
@@ -157,7 +154,9 @@ const Form = ({ data, open, action, close }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText>{errors.category}</FormHelperText>
+                  {touched.category && errors.category && (
+                    <FormHelperText>{errors.category}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
 
@@ -170,8 +169,12 @@ const Form = ({ data, open, action, close }) => {
                   onChange={handleChange}
                   value={values.description}
                   name="description"
-                  error={!!errors.description}
-                  helperText={errors.description}
+                  error={touched.description && !!errors.description}
+                  helperText={
+                    touched.description && !!errors.description
+                      ? errors.description
+                      : undefined
+                  }
                 />
               </Grid>
 
@@ -185,7 +188,9 @@ const Form = ({ data, open, action, close }) => {
                   value={values.value}
                   name="value"
                   error={touched.value && !!errors.value}
-                  helperText={errors.value}
+                  helperText={
+                    touched.value && !!errors.value ? errors.value : undefined
+                  }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">R$</InputAdornment>
@@ -195,14 +200,39 @@ const Form = ({ data, open, action, close }) => {
               </Grid>
 
               <Grid item xs={2}>
-                <TextField
-                  fullWidth
-                  type="text"
-                  label="Parcela"
-                  value={`${values.installment} de ${values.installments}`}
-                  aria-readonly={true}
-                  disabled={true}
-                />
+                {values.id ? (
+                  <TextField
+                    fullWidth
+                    type="text"
+                    label="Parcela"
+                    value={`${values.installment} de ${values.installments}`}
+                    aria-readonly={true}
+                    disabled={true}
+                  />
+                ) : (
+                  <FormControl
+                    fullWidth
+                    error={touched.installments && !!errors.installments}
+                  >
+                    <InputLabel>Parcelas</InputLabel>
+                    <Select
+                      onChange={handleChange}
+                      name="installments"
+                      value={values.installments}
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(
+                        (installment) => (
+                          <MenuItem key={installment} value={installment}>
+                            {installment}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                    {touched.installments && errors.installments && (
+                      <FormHelperText>{errors.installments}</FormHelperText>
+                    )}
+                  </FormControl>
+                )}
               </Grid>
 
               <Grid item xs={2}>
@@ -218,9 +248,13 @@ const Form = ({ data, open, action, close }) => {
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('dueDate', date)}
                     name="dueDate"
-                    error={touched.dueDate && !!errors.dueDate}
+                    slotProps={{
+                      textField: {
+                        helperText: errors.dueDate,
+                        error: touched.dueDate && !!errors.dueDate,
+                      },
+                    }}
                   />
-                  <FormHelperText>{errors.dueDate}</FormHelperText>
                 </FormControl>
               </Grid>
 
@@ -237,14 +271,21 @@ const Form = ({ data, open, action, close }) => {
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('payDate', date)}
                     name="payDate"
-                    error={touched.payDate && !!errors.payDate}
+                    slotProps={{
+                      textField: {
+                        helperText: errors.payDate,
+                        error: touched.payDate && !!errors.payDate,
+                      },
+                    }}
                   />
-                  <FormHelperText>{errors.payDate}</FormHelperText>
                 </FormControl>
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.status}>
+                <FormControl
+                  fullWidth
+                  error={touched.status && !!errors.status}
+                >
                   <InputLabel>Status</InputLabel>
                   <Select
                     onChange={handleChange}
@@ -257,9 +298,37 @@ const Form = ({ data, open, action, close }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText>{errors.status}</FormHelperText>
+                  {touched.status && !!errors.status && (
+                    <FormHelperText>{errors.status}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
+
+              {values.status === 'Quitado' && (
+                <Grid item xs={2}>
+                  <FormControl
+                    fullWidth
+                    error={touched.reserveId && !!errors.reserveId}
+                  >
+                    <InputLabel>Origem/Destino</InputLabel>
+                    <Select
+                      onChange={handleChange}
+                      name="reserveId"
+                      value={values.reserveId}
+                    >
+                      <MenuItem value="">Selecione</MenuItem>
+                      {reserves?.data?.map((reserve) => (
+                        <MenuItem key={reserve.id} value={reserve.id}>
+                          {reserve.description}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {touched.reserveId && !!errors.reserveId && (
+                      <FormHelperText>{errors.reserveId}</FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+              )}
             </Grid>
 
             <Box

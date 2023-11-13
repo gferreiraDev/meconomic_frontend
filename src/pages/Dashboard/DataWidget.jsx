@@ -2,6 +2,7 @@ import { Box, Card, IconButton, Typography } from '@mui/material';
 import { VisibilityOutlined } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { currency } from '../../utils';
 
 const DataWidget = ({ title, value }) => {
   const [visible, setVisible] = useState(false);
@@ -33,12 +34,7 @@ const DataWidget = ({ title, value }) => {
       </Box>
 
       <Typography variant="h6" sx={{ textAlign: 'center', mt: 1 }}>
-        {visible
-          ? value.toLocaleString('pt-br', {
-              style: 'currency',
-              currency: 'BRL',
-            })
-          : '--'}
+        {visible ? currency(value) : '--'}
       </Typography>
     </Card>
   );

@@ -56,7 +56,6 @@ const SideNav = () => {
 
   const toggleMode = () => {
     dispatch(toggleTheme());
-    console.log(theme);
   };
 
   const menuItens = [

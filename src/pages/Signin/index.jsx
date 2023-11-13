@@ -1,5 +1,6 @@
 import { LockOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
 import { useSigninMutation } from '../../services/authService';
+import { schema } from '../../validationSchemas/signinSchema';
 import { setCredentials } from '../../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -7,15 +8,11 @@ import { Alert } from '../../components';
 import { LoadingButton } from '@mui/lab';
 import { useState } from 'react';
 import { Formik } from 'formik';
-import * as yup from 'yup';
 import {
   Grid,
   Typography,
   TextField,
-  // Checkbox,
-  Paper,
   Avatar,
-  // FormControlLabel,
   Link,
   InputAdornment,
   IconButton,
@@ -35,31 +32,24 @@ const Signin = () => {
   const initialValues = {
     email: '',
     password: '',
-    // remember: true,
   };
-
-  const validations = yup.object({
-    email: yup
-      .string()
-      .email('Formato inválido')
-      .required('E-mail é obrigatório'),
-    password: yup.string().required('Senha é obrigatório'),
-  });
 
   return (
     <Formik
-      validationSchema={validations}
+      validationSchema={schema}
       initialValues={initialValues}
       onSubmit={(values, { setSubmitting, resetForm }) => {
         signin(values)
           .unwrap()
           .then(({ message, data }) => {
-            setSubmitting(false);
-            setMessage({ message, error: false, visible: true });
-
             dispatch(setCredentials(data));
             resetForm();
-            navigate('/dashboard', { replace: true });
+
+            setMessage({ message, error: false, visible: true });
+            setTimeout(() => {
+              setSubmitting(false);
+              navigate('/dashboard', { replace: true });
+            }, 2000);
           })
           .catch((error) => {
             setSubmitting(false);
@@ -78,7 +68,6 @@ const Signin = () => {
         handleChange,
         isSubmitting,
         handleSubmit,
-        setFieldValue,
       }) => (
         <Grid
           container
@@ -110,7 +99,7 @@ const Signin = () => {
             </Typography>
           </Grid>
 
-          <Grid xs={12}>
+          <Grid item xs={12}>
             <TextField
               label="E-mail"
               placeholder="Digite seu e-mail"
@@ -119,7 +108,9 @@ const Signin = () => {
               onChange={handleChange('email')}
               fullWidth
               error={touched.email && !!errors.email}
-              helperText={errors.email}
+              helperText={
+                touched.email && !!errors.email ? errors.email : undefined
+              }
             />
           </Grid>
 
@@ -133,7 +124,11 @@ const Signin = () => {
               onChange={handleChange('password')}
               error={touched.password && !!errors.password}
               fullWidth
-              helperText={errors.password}
+              helperText={
+                touched.password && !!errors.password
+                  ? errors.password
+                  : undefined
+              }
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -148,22 +143,6 @@ const Signin = () => {
               }}
             />
           </Grid>
-
-          {/* 
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="remember"
-                    color="primary"
-                    checked={values.remember}
-                    onChange={() => setFieldValue('remember', !values.remember)}
-                  />
-                }
-                label="Lembrar usuário"
-              /> 
-            </Grid>
-          */}
 
           <Grid item xs={12}>
             <LoadingButton

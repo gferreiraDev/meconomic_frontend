@@ -1,374 +1,149 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Modal, Box, Typography, Grid, Paper, Divider } from '@mui/material';
+import { Box, Grid, Modal, Typography } from '@mui/material';
+import { useChart } from '../../hooks/useChart';
+import ReactApexChart from 'react-apexcharts';
+import { useState, useEffect } from 'react';
+import InfoTable from './InfoTable';
 import PropTypes from 'prop-types';
-import { Hypnosis } from 'react-cssfx-loading';
 
-const ModalGraph = ({ title }) => {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: 120,
-        bgcolor: '#dadada',
-        alignItems: 'center',
-        justifyContent: 'center',
-        p: 1,
-        mb: 2,
-      }}
-    >
-      <Hypnosis
-        width="65px"
-        height="65px"
-        style={{
-          margin: 'auto',
-        }}
-        color="#4cceac"
-      />
-      <Typography variant="h6" textAlign="center">
-        {title}
-      </Typography>
-    </Box>
-  );
-};
-
-ModalGraph.propTypes = {
-  title: PropTypes.string,
-};
-
-const ModalBox = ({ open, handleClose, list }) => {
+const ModalBox = ({ open, handleClose, report }) => {
   const [data, setData] = useState({
-    rf: 0,
-    rv: 0,
-    ra: 0,
-    rq: 0,
-    rp: 0,
-    df: 0,
-    dv: 0,
-    da: 0,
-    dq: 0,
-    dp: 0,
-    saldo: 0,
+    expenses: {
+      fixed: 0,
+      variable: 0,
+      discretionary: 0,
+      pending: 0,
+      paid: 0,
+      total: 0,
+    },
+    incomes: {
+      fixed: 0,
+      variable: 0,
+      discretionary: 0,
+      pending: 0,
+      paid: 0,
+      total: 0,
+    },
+    balance: 0,
+  });
+  const [refData, setRefData] = useState({
+    expenses: {
+      fixed: 0,
+      variable: 0,
+      discretionary: 0,
+      total: 0,
+    },
+    incomes: {
+      fixed: 0,
+      variable: 0,
+      discretionary: 0,
+      total: 0,
+    },
   });
 
-  const calculate = (list) => {
-    const aux = { ...data };
-    // const aux = {
-    //   rf: 0,
-    //   rv: 0,
-    //   ra: 0,
-    //   rp: 0,
-    //   rq: 0,
-    //   df: 0,
-    //   dv: 0,
-    //   da: 0,
-    //   dq: 0,
-    //   dp: 0,
-    // };
+  useEffect(() => {
+    if (report?.indexes) {
+      setData(report.indexes);
+    }
 
-    list?.forEach(({ type, status, value }) => {
-      let index = type.toLowerCase();
-      aux[index] += value;
+    if (report?.expectedIndexes) setRefData(report.expectedIndexes);
+  }, [report]);
 
-      if (type.startsWith('R')) {
-        status === 'Quitado' ? (aux.rq += value) : (aux.rp += value);
-      } else if (type.startsWith('D')) {
-        status === 'Quitado' ? (aux.dq += value) : (aux.dp += value);
-      }
-    });
-
-    setData((prev) => Object.assign(prev, aux));
-  };
-
-  useMemo(() => calculate(list), [list]);
+  const options = useChart({
+    plotOptions: { bar: { columnWidth: '45%' } },
+    fill: {
+      type: 'solid',
+    },
+    tooltip: {
+      shared: true,
+      intersect: false,
+      y: {
+        formatter: (y) => {
+          return typeof y === 'number'
+            ? y.toLocaleString('pt-br', {
+                style: 'currency',
+                currency: 'BRL',
+              })
+            : y;
+        },
+      },
+      theme: false,
+      style: {
+        foreColor: 'theme.paper',
+        color: '#f00',
+      },
+    },
+    xaxis: {
+      categories: [
+        'RF',
+        'RV',
+        'RA',
+        'RP',
+        'RQ',
+        'RT',
+        'DF',
+        'DV',
+        'DA',
+        'DP',
+        'DQ',
+        'DT',
+      ],
+    },
+    series: [
+      {
+        name: 'previsto',
+        data: Object.keys(refData.incomes)
+          .map((key) => refData.incomes[key])
+          .concat(
+            Object.keys(refData.expenses).map((key) => refData.expenses[key])
+          ),
+      },
+      {
+        name: 'realizado',
+        data: Object.keys(data.incomes)
+          .map((key) => data.incomes[key])
+          .concat(Object.keys(data.expenses).map((key) => data.expenses[key])),
+      },
+    ],
+  });
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box component={Paper} sx={{ width: '65%', margin: '10% auto', p: 2 }}>
-        <Typography
-          variant="h5"
-          sx={{ textAlign: 'center', borderBottom: 'solid 1px #ccc', mb: 1 }}
-        >
-          Resumo do mês
-        </Typography>
-
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          {/* DESCRITIVO DE RECEITAS */}
-          <Box
+      <Grid
+        container
+        sx={{
+          bgcolor: 'primary.main',
+          width: '65%',
+          minWidth: 700,
+          margin: '5% auto',
+          borderRadius: 2,
+          p: 1,
+        }}
+      >
+        <Grid item xs={12}>
+          <Typography
+            variant="h5"
             sx={{
-              width: '25%',
-              justifyContent: 'center',
-              border: 'solid 1px #ccc',
-              borderRadius: 2,
-              p: 1,
+              textAlign: 'center',
+              borderBottomWidth: 1,
+              borderBottomStyle: 'solid',
+              borderBottomColor: 'paper',
             }}
           >
-            <ModalGraph title="Receitas" />
+            Resumo do mês
+          </Typography>
+        </Grid>
 
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Fixas</Typography>
-              <Typography variant="caption">
-                {data?.rf?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
+        <InfoTable data={report} />
 
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Variáveis</Typography>
-              <Typography variant="caption">
-                {data?.rv?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Adicionais</Typography>
-              <Typography variant="caption">
-                {data?.ra?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Divider />
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Quitadas</Typography>
-              <Typography variant="caption">
-                {data?.rq?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Pendente</Typography>
-              <Typography variant="caption">
-                {data?.rp?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Divider />
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Totais</Typography>
-              <Typography variant="caption">
-                {(data?.rp + data?.rq).toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-          </Box>
-
-          {/* DESCRITIVO DE DESPESAS */}
-          <Box
-            sx={{
-              width: '25%',
-              justifyContent: 'center',
-              border: 'solid 1px #999',
-              borderRadius: 2,
-              p: 1,
-            }}
-          >
-            <ModalGraph title="Despesas" />
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Fixas</Typography>
-              <Typography variant="caption">
-                {data?.df?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Variáveis</Typography>
-              <Typography variant="caption">
-                {data?.dv?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Adicionais</Typography>
-              <Typography variant="caption">
-                {data?.da?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Divider />
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Quitadas</Typography>
-              <Typography variant="caption">
-                {data?.dq?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Pendente</Typography>
-              <Typography variant="caption">
-                {data?.dp?.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Divider />
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Totais</Typography>
-              <Typography variant="caption">
-                {(data?.dp + data?.dq).toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-          </Box>
-
-          {/* DESCRITIVO SOMATORIO */}
-          <Box
-            sx={{
-              width: '25%',
-              justifyContent: 'center',
-              border: 'solid 1px #999',
-              borderRadius: 2,
-              p: 1,
-            }}
-          >
-            <ModalGraph title="Resultado" />
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Saldo Atual</Typography>
-              <Typography variant="caption">
-                {data.saldo.toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="body1">Saldo Previsto</Typography>
-              <Typography variant="caption">
-                {(data?.saldo + data?.rp - data?.dp).toLocaleString('pt-br', {
-                  style: 'currency',
-                  currency: 'BRL',
-                })}
-              </Typography>
-            </Box>
-          </Box>
+        <Box sx={{ width: '100%' }}>
+          <ReactApexChart
+            type="bar"
+            series={options.series}
+            options={options}
+            height={250}
+          />
         </Box>
-      </Box>
+      </Grid>
     </Modal>
   );
 };
@@ -376,7 +151,7 @@ const ModalBox = ({ open, handleClose, list }) => {
 ModalBox.propTypes = {
   open: PropTypes.bool,
   handleClose: PropTypes.func,
-  list: PropTypes.array,
+  report: PropTypes.object,
 };
 
 export default ModalBox;

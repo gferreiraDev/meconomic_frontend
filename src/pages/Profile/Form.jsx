@@ -43,8 +43,6 @@ const Form = ({ visible, setVisible }) => {
         initialValues={initialValues}
         validationSchema={validations}
         onSubmit={(values, { resetForm, setSubmitting }) => {
-          console.log(values);
-
           update(values)
             .unwrap()
             .then((response) => {
@@ -52,7 +50,6 @@ const Form = ({ visible, setVisible }) => {
               alert(response.message);
             })
             .catch((error) => {
-              console.log(error);
               alert(error.data.message);
             })
             .finally(() => {

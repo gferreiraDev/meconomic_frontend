@@ -17,13 +17,11 @@ const List = ({ rows, selected, setSelected, edit, remove, children }) => {
   };
 
   const handleRemove = () => {
-    console.log('Editing data:', selected);
     setOpen(null);
     remove(selected);
   };
 
   const handleEdit = () => {
-    console.log('Editing data:', selected);
     setOpen(null);
     edit(selected);
   };
@@ -118,6 +116,7 @@ const List = ({ rows, selected, setSelected, edit, remove, children }) => {
               <EditOutlined sx={{ mr: 2 }} />
               Editar
             </MenuItem>
+
             <MenuItem sx={{ color: 'error.main' }} onClick={handleRemove}>
               <DeleteForeverOutlined sx={{ mr: 2 }} />
               Excluir
@@ -169,7 +168,12 @@ const List = ({ rows, selected, setSelected, edit, remove, children }) => {
       >
         {children}
       </Box>
-      <DataGrid rowHeight={40} columns={columns} rows={rows?.data} hideFooter />
+      <DataGrid
+        rowHeight={40}
+        columns={columns}
+        rows={rows?.transactions}
+        hideFooter
+      />
     </Box>
   );
 };

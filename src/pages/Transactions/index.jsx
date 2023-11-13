@@ -37,9 +37,9 @@ const Transactions = () => {
     drop({ id: value.id })
       .unwrap()
       .then((response) => {
-        console.log(response);
+        response;
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {})
       .finally(() => {
         refetch();
       });
@@ -75,11 +75,11 @@ const Transactions = () => {
         action={() => handleSelect(null)}
       />
 
-      {isLoading ? (
+      {isLoading || !data ? (
         <Loader />
       ) : isSuccess && data ? (
         <List
-          rows={data}
+          rows={data?.data}
           selected={selected}
           setSelected={setSelected}
           edit={handleSelect}
@@ -112,7 +112,7 @@ const Transactions = () => {
                 month: 'long',
                 year: 'numeric',
               })}
-              disabled
+              aria-readonly
             />
 
             <IconButton size="small" onClick={handleNextMonth}>
@@ -153,7 +153,7 @@ const Transactions = () => {
       <ModalBox
         open={showResume}
         handleClose={toggleResumeData}
-        list={data?.data}
+        report={data?.data?.report}
       />
 
       <Alert

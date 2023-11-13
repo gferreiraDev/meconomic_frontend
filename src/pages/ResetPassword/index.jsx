@@ -2,7 +2,16 @@ import { useState } from 'react';
 import { LockOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Avatar, Button, Grid, IconButton, InputAdornment, Paper, TextField, Typography } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useResetPasswordMutation } from '../../services/authService';
@@ -54,20 +63,25 @@ const ResetPassword = (props) => {
         validationSchema={validations}
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting, resetForm }) => {
-          console.log(values);
-
           sendData({ resetForm, ...values })
             .unwrap()
             .then((response) => {
-              console.log(response.message);
               setSubmitting(false);
               resetForm();
             })
-            .catch((error) => console.log(error))
+            .catch((error) => {})
             .finally(() => navigate('/signin', { replace: true }));
         }}
       >
-        {({ values, errors, touched, handleChange, isSubmitting, handleSubmit, setFieldValue }) => (
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          isSubmitting,
+          handleSubmit,
+          setFieldValue,
+        }) => (
           <Grid container rowGap={2} justifyContent="center">
             <TextField
               label="Senha"
@@ -81,7 +95,10 @@ const ResetPassword = (props) => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)}>
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -102,7 +119,10 @@ const ResetPassword = (props) => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)}>
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -111,11 +131,22 @@ const ResetPassword = (props) => {
               fullWidth
             />
 
-            <LoadingButton fullWidth variant="contained" color="primary" loading={isSubmitting} onClick={handleSubmit}>
+            <LoadingButton
+              fullWidth
+              variant="contained"
+              color="primary"
+              loading={isSubmitting}
+              onClick={handleSubmit}
+            >
               Salvar
             </LoadingButton>
 
-            <Button fullWidth variant="outlined" color="inherit" onClick={() => navigate('/signin', { replace: true })}>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="inherit"
+              onClick={() => navigate('/signin', { replace: true })}
+            >
               Cancelar
             </Button>
           </Grid>

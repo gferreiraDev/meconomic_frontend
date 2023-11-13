@@ -15,14 +15,6 @@ export const authService = apiService.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      transformResponse: (response) => {
-        console.log('Response within authService', response);
-        return response;
-      },
-      transformErrorResponse: (response) => {
-        console.log('Error response within authService', response);
-        return response;
-      },
     }),
     signout: builder.mutation({
       query: () => ({
@@ -37,7 +29,6 @@ export const authService = apiService.injectEndpoints({
         body: data,
       }),
       transformResponse: (response) => {
-        console.log('Response within authService', response);
         return response;
       },
     }),
@@ -47,24 +38,12 @@ export const authService = apiService.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
-      transformResponse: (response) => {
-        console.log('Response within authService', response);
-        return response;
-      },
     }),
     deleteUser: builder.mutation({
       query: () => ({
         url: '/users',
         method: 'DELETE',
       }),
-      transformResponse: (response) => {
-        console.log('Response within authService', response);
-        return response;
-      },
-      transformErrorResponse: (response) => {
-        console.log('Error response within authService', response);
-        return response;
-      },
     }),
     forgotPassword: builder.mutation({
       query: (data) => ({

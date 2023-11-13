@@ -55,7 +55,7 @@ const PieChart = ({ title, subtitle, data, ...props }) => {
             height: 80,
             alignContent: 'center',
             position: 'relative !important',
-            borderTop: `solid 1px #ccc`,
+            borderTop: `solid 1px #aaa`,
             top: '300px !important',
           },
         }}

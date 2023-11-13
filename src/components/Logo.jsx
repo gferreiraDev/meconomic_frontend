@@ -8,7 +8,6 @@ const Logo = ({ short }) => {
       src={short ? '/images/logo_short.png' : '/images/logo_full.png'}
       alt="logotipo"
       sx={{
-        // width: 20,
         height: 16,
       }}
     />

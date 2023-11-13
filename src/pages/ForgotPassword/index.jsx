@@ -1,29 +1,33 @@
 import { useForgotPasswordMutation } from '../../services/authService';
+import { schema } from '../../validationSchemas/forgotPasswordSchema';
 import { LockOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useMask } from '@react-input/mask';
 import { LoadingButton } from '@mui/lab';
+import { Alert } from '../../components';
 import { Formik } from 'formik';
-import * as yup from 'yup';
 import { Avatar, Button, Grid, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [sendData] = useForgotPasswordMutation();
+  const [message, setMessage] = useState({
+    message: '',
+    error: false,
+    visible: false,
+  });
+
+  const documentMaskRef = useMask({ mask: '___.___.___-__', replacement: '_' });
 
   const initialValues = {
     email: '',
+    document: '',
   };
-
-  const validations = yup.object({
-    email: yup
-      .string()
-      .email('Formato inválido')
-      .required('E-mail é obrigatório'),
-  });
 
   return (
     <Formik
-      validationSchema={validations}
+      validationSchema={schema}
       initialValues={initialValues}
       onSubmit={(values, { setSubmitting, resetForm }) => {
         sendData(values)
@@ -32,7 +36,12 @@ const ForgotPassword = () => {
             setSubmitting(false);
             resetForm();
 
-            navigate('/signin', { replace: true });
+            setMessage((prev) => ({
+              ...prev,
+              message: 'E-mail enviado.',
+              visible: true,
+            }));
+            setTimeout(() => navigate('/signin', { replace: true }), 5000);
           });
       }}
     >
@@ -43,7 +52,6 @@ const ForgotPassword = () => {
         handleChange,
         isSubmitting,
         handleSubmit,
-        setFieldValue,
       }) => (
         <Grid
           container
@@ -77,13 +85,31 @@ const ForgotPassword = () => {
           <Grid item xs={12}>
             <TextField
               label="E-mail"
-              placeholder="Digite seu e-mail"
               name="email"
               value={values.email}
               onChange={handleChange}
               fullWidth
               error={touched.email && !!errors.email}
-              helperText={errors.email}
+              helperText={
+                touched.email && !!errors.email ? errors.email : undefined
+              }
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              inputRef={documentMaskRef}
+              label="CPF"
+              name="document"
+              value={values.document}
+              onChange={handleChange}
+              fullWidth
+              error={touched.document && !!errors.document}
+              helperText={
+                touched.document && !!errors.document
+                  ? errors.document
+                  : undefined
+              }
             />
           </Grid>
 
@@ -124,6 +150,15 @@ const ForgotPassword = () => {
               Voltar
             </Button>
           </Grid>
+
+          <Alert
+            open={message.visible}
+            handleClose={() =>
+              setMessage((prev) => ({ ...prev, visible: !prev.visible }))
+            }
+            message={message.message}
+            error={message.error}
+          />
         </Grid>
       )}
     </Formik>

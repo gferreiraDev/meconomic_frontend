@@ -14,7 +14,6 @@ export const transactionService = apiService.injectEndpoints({
         url: '/transactions',
         params: { dueDate },
       }),
-      // keepUnusedDataFor: 5,
     }),
     updateTransaction: builder.mutation({
       query: ({ id, data }) => ({

@@ -1,16 +1,16 @@
-import {
-  useCreateCardMutation,
-  useUpdateCardMutation,
-} from '../../services/cardService';
 import { brands, chargeRules, cardStatus } from '../../_mocks';
+import { schema } from '../../validationSchemas/cardsSchema';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { getDate, format } from 'date-fns';
 import { formatCurrency, dayToDate } from '../../utils';
+import { getDate, format } from 'date-fns';
 import { stringToDate } from '../../utils';
 import { LoadingButton } from '@mui/lab';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
-import * as yup from 'yup';
+import {
+  useCreateCardMutation,
+  useUpdateCardMutation,
+} from '../../services/cardService';
 import {
   Box,
   Grid,
@@ -45,33 +45,11 @@ const Form = ({ data, open, action, close }) => {
         status: '',
       };
 
-  const validations = yup.object({
-    name: yup.string().required('Campo obrigatório'),
-    brand: yup.string().required('Campo obrigatório'),
-    lastNumbers: yup.string().required('Campo obrigatório'),
-    limit: yup.string().min(0, 'Valor inválido').required('Campo obrigatório'),
-    closingDay: yup
-      .number()
-      .min(1, 'Valor inválido')
-      .max(31, 'Valor inválido')
-      .required('Campo obrigatório'),
-    dueDay: yup
-      .number()
-      .min(1, 'Valor inválido')
-      .max(31, 'Valor inválido')
-      .required('Campo obrigatório'),
-    annuity: yup.string().required('Campo obrigatório'),
-    fees: yup.string().required('Campo obrigatório'),
-    chargeRule: yup.string().required('Campo obrigatório'),
-    expiryDate: yup.string().required('Campo obrigatório'),
-    status: yup.string().required('Campo obrigatório'),
-  });
-
   return (
     <Drawer open={open} anchor="right">
       <Formik
         initialValues={initialValues}
-        validationSchema={validations}
+        validationSchema={schema}
         onSubmit={(values, { resetForm, setSubmitting }) => {
           const data = {
             ...values,
@@ -144,13 +122,15 @@ const Form = ({ data, open, action, close }) => {
                   onChange={handleChange}
                   value={values.name}
                   name="name"
-                  error={!!errors.name}
-                  helperText={errors.name}
+                  error={touched.name && !!errors.name}
+                  helperText={
+                    touched.name && !!errors.name ? errors.name : undefined
+                  }
                 />
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.brand}>
+                <FormControl fullWidth error={touched.brand && !!errors.brand}>
                   <InputLabel>Bandeira</InputLabel>
                   <Select
                     label="Tipo"
@@ -165,7 +145,9 @@ const Form = ({ data, open, action, close }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText>{errors.brand}</FormHelperText>
+                  {touched.brand && !!errors.brand && (
+                    <FormHelperText>{errors.brand}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
 
@@ -178,8 +160,12 @@ const Form = ({ data, open, action, close }) => {
                   onChange={handleChange}
                   value={values.lastNumbers}
                   name="lastNumbers"
-                  error={!!errors.lastNumbers}
-                  helperText={errors.lastNumbers}
+                  error={touched.lastNumbers && !!errors.lastNumbers}
+                  helperText={
+                    touched.lastNumbers && !!errors.lastNumbers
+                      ? errors.lastNumbers
+                      : undefined
+                  }
                 />
               </Grid>
 
@@ -193,7 +179,9 @@ const Form = ({ data, open, action, close }) => {
                   value={values.limit}
                   name="limit"
                   error={touched.limit && !!errors.limit}
-                  helperText={errors.limit}
+                  helperText={
+                    touched.limit && !!errors.limit ? errors.limit : undefined
+                  }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">R$</InputAdornment>
@@ -203,7 +191,10 @@ const Form = ({ data, open, action, close }) => {
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.expiryDate}>
+                <FormControl
+                  fullWidth
+                  error={touched.expiryDate && !!errors.expiryDate}
+                >
                   <DatePicker
                     label="Validade"
                     views={['year', 'month']}
@@ -214,18 +205,24 @@ const Form = ({ data, open, action, close }) => {
                       setFieldValue('expiryDate', format(date, 'MM/yy'))
                     }
                     name="expiryDate"
-                    error={!!errors.expiryDate}
+                    slotProps={{
+                      textField: {
+                        helperText: errors.expiryDate,
+                        error: touched.expiryDate && !!errors.expiryDate,
+                      },
+                    }}
                   />
-                  <FormHelperText>{errors.expiryDate}</FormHelperText>
                 </FormControl>
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.closingDay}>
+                <FormControl
+                  fullWidth
+                  error={touched.closingDay && !!errors.closingDay}
+                >
                   <DatePicker
                     label="Dia de Fechamento"
                     views={['day']}
-                    // format="DD"
                     value={
                       values.closingDay ? dayToDate(values.closingDay) : null
                     }
@@ -234,14 +231,21 @@ const Form = ({ data, open, action, close }) => {
                       setFieldValue('closingDay', getDate(date))
                     }
                     name="closingDay"
-                    error={!!errors.closingDay}
+                    slotProps={{
+                      textField: {
+                        helperText: errors.closingDay,
+                        error: touched.closingDay && !!errors.closingDay,
+                      },
+                    }}
                   />
-                  <FormHelperText>{errors.closingDay}</FormHelperText>
                 </FormControl>
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.dueDay}>
+                <FormControl
+                  fullWidth
+                  error={touched.dueDay && !!errors.dueDay}
+                >
                   <DatePicker
                     label="Dia de Vencimento"
                     views={['day']}
@@ -249,9 +253,13 @@ const Form = ({ data, open, action, close }) => {
                     onBlur={handleBlur}
                     onChange={(date) => setFieldValue('dueDay', getDate(date))}
                     name="dueDay"
-                    error={!!errors.dueDay}
+                    slotProps={{
+                      textField: {
+                        helperText: errors.dueDay,
+                        error: touched.dueDay && !!errors.dueDay,
+                      },
+                    }}
                   />
-                  <FormHelperText>{errors.dueDay}</FormHelperText>
                 </FormControl>
               </Grid>
 
@@ -264,8 +272,12 @@ const Form = ({ data, open, action, close }) => {
                   onChange={handleChange}
                   value={values.annuity}
                   name="annuity"
-                  error={!!errors.annuity}
-                  helperText={errors.annuity}
+                  error={touched.annuity && !!errors.annuity}
+                  helperText={
+                    touched.annuity && !!errors.annuity
+                      ? errors.annuity
+                      : undefined
+                  }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">R$</InputAdornment>
@@ -283,8 +295,10 @@ const Form = ({ data, open, action, close }) => {
                   onChange={handleChange}
                   value={values.fees}
                   name="fees"
-                  error={!!errors.fees}
-                  helperText={errors.fees}
+                  error={touched.fees && !!errors.fees}
+                  helperText={
+                    touched.fees && !!errors.fees ? errors.fees : undefined
+                  }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">R$</InputAdornment>
@@ -294,7 +308,10 @@ const Form = ({ data, open, action, close }) => {
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.chargeRule}>
+                <FormControl
+                  fullWidth
+                  error={touched.chargeRule && !!errors.chargeRule}
+                >
                   <InputLabel>Tipo de Cobrança</InputLabel>
                   <Select
                     onChange={handleChange}
@@ -308,12 +325,17 @@ const Form = ({ data, open, action, close }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText>{errors.chargeRule}</FormHelperText>
+                  {touched.chargeRule && !!errors.chargeRule && (
+                    <FormHelperText>{errors.chargeRule}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
 
               <Grid item xs={2}>
-                <FormControl fullWidth error={!!errors.status}>
+                <FormControl
+                  fullWidth
+                  error={touched.status && !!errors.status}
+                >
                   <InputLabel>Status</InputLabel>
                   <Select
                     onChange={handleChange}
@@ -327,7 +349,9 @@ const Form = ({ data, open, action, close }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  <FormHelperText>{errors.status}</FormHelperText>
+                  {touched.status && !!errors.status && (
+                    <FormHelperText>{errors.status}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
             </Grid>

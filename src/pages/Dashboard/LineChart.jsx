@@ -45,7 +45,7 @@ const LineChart = ({ title, subtitle, labels, data, ...props }) => {
 
       <Box sx={{ p: 1 }}>
         <ReactApexChart
-          type="line"
+          type="bar"
           series={data}
           options={options}
           height={320}

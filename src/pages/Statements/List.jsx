@@ -58,13 +58,11 @@ const List = ({ columns, rows, selected, setSelected, onEdit, onDelete }) => {
   };
 
   const handleRemove = () => {
-    console.log('Editing data:', selected);
     setOpen(null);
     onDelete();
   };
 
   const handleEdit = () => {
-    console.log('Editing data:', selected);
     setOpen(null);
     onEdit();
   };

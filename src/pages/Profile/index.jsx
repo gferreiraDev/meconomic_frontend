@@ -58,7 +58,6 @@ const Profile = () => {
         navigate('/signin', { replace: true });
       })
       .catch((error) => {
-        console.log(error);
         alert(error.data.message);
       });
   };
@@ -72,8 +71,6 @@ const Profile = () => {
         validationSchema={validations}
         enableReinitialize
         onSubmit={(values, { setSubmitting }) => {
-          console.log(values);
-
           update(values)
             .unwrap()
             .then((response) => {
@@ -81,7 +78,6 @@ const Profile = () => {
               alert(response.message);
             })
             .catch((error) => {
-              console.log(error);
               alert(error.data.message);
             })
             .finally(() => {
