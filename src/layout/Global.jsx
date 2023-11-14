@@ -1,5 +1,6 @@
 import { Container } from '@mui/material';
 import { Outlet } from 'react-router-dom';
+import { Suspense } from 'react';
 
 const Global = () => {
   return (
@@ -13,7 +14,9 @@ const Global = () => {
         py: 6,
       }}
     >
-      <Outlet />
+      <Suspense fallback={<h1>Loading...</h1>}>
+        <Outlet />
+      </Suspense>
     </Container>
   );
 };

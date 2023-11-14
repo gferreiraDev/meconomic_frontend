@@ -3,6 +3,7 @@ import { Box, Container } from '@mui/material';
 import { getUser } from '../redux/authSlice';
 import SideNav from '../components/SideNav';
 import { useSelector } from 'react-redux';
+import { Suspense } from 'react';
 
 const Private = () => {
   const user = useSelector(getUser);
@@ -23,7 +24,9 @@ const Private = () => {
       </Box>
 
       <Box sx={{ flex: 1, p: 2, overflow: 'hidden' }}>
-        <Outlet />
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <Outlet />
+        </Suspense>
       </Box>
     </Container>
   ) : (

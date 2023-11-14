@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { useTheme, alpha } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 
 export const useChart = (options) => {
   const theme = useTheme();
