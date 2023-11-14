@@ -21,10 +21,10 @@ const Router = () => {
   const routes = useRoutes([
     {
       path: '/',
-      element: <GlobalLayout />,
+      element: () => import('../layout/Global'),
       children: [
-        { index: true, element: <Signin /> },
-        { path: 'signup', element: <Signup /> },
+        { index: true, element: () => import('../pages/Signin') },
+        { path: 'signup', element: () => import('../pages/Signup') },
         { path: 'signin', element: <Navigate to="/" replace /> },
         {
           path: 'forgot-password',
@@ -38,7 +38,7 @@ const Router = () => {
     },
     {
       path: '/',
-      element: <PrivateLayout />,
+      element: () => import('../layout/Private'),
       children: [
         { path: 'dashboard', element: <Dashboard /> },
         { path: 'statements', element: <Statements /> },
